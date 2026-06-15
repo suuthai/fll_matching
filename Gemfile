@@ -45,6 +45,10 @@ gem "image_processing", "~> 1.2"
 # Authentication
 gem "devise"
 
+# Template engine
+gem "haml-rails"
+gem "html2haml"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
