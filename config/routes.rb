@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   devise_for :users
   root "home#index"
+
+  resources :checkouts, only: [ :create ]
+  get "checkouts/success", to: "checkouts#success", as: :checkout_success
+  get "checkouts/cancel", to: "checkouts#cancel", as: :checkout_cancel
+  post "stripe/webhook", to: "checkouts#webhook"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

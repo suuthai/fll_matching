@@ -45,6 +45,9 @@ gem "image_processing", "~> 1.2"
 # Authentication
 gem "devise"
 
+# Payment
+gem "stripe"
+
 # Template engine
 gem "haml-rails"
 gem "html2haml"

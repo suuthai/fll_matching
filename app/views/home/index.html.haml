@@ -1,2 +1,36 @@
-%h1 Home#index
-%p Find me in app/views/home/index.html.erb
+%header
+  %h1.logo= link_to "Fll Matching", root_path
+  .header-user
+    %i.bi.bi-person-fill
+    = current_user.email
+
+  .header-controls
+    = button_tag class: "btn-primary",
+      data: { bs_toggle: "modal", bs_target: "#ticket-modal" } do
+
+      - if current_user.tickets_count <= 0
+        チケットを購入する
+      - else
+        = "購入済みのチケットが#{current_user.tickets_count}回分あります"
+
+    = button_to "ログアウト", destroy_user_session_path,
+      method: :delete, class: "btn-secondary"
+
+%main
+  %h1 Home#index
+  %p Find me in app/views/home/index.html.erb
+
+#ticket-modal.modal.fade
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        %h5.modal-title チケット
+        %button.btn-close{ type: "button", data: { bs_dismiss: "modal" } }
+      .modal-body
+        - if current_user.tickets_count > 0
+          %div= "購入済みのチケットが#{current_user.tickets_count}回分あります。"
+        .buy-ticket-buttons
+          - ticket_plans.each do |plan_id, plan|
+            = button_to checkouts_path, params: { plan: plan_id }, data: { turbo: false }, class: "buy-ticket-button" do
+              %div= plan[:label]
+              .ms-auto= "#{plan[:price]}円+税"

@@ -1,2 +1,53 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+button {
+  @extend .btn;
+}
+
+form.button_to {
+  display: contents;
+}
+
+.toast-container {
+  @extend .position-fixed;
+  @extend .bottom-0;
+  @extend .end-0;
+  @extend .py-2;
+  @extend .px-3;
+}
+
+header {
+  @extend .d-flex;
+  @extend .flex-wrap;
+  @extend .align-items-center;
+  @extend .justify-content-end;
+  @extend .gap-2;
+  @extend .py-2;
+  @extend .px-3;
+}
+
+.header-user {
+  @extend .ms-auto;
+  @extend .text-nowrap;
+}
+
+.header-controls {
+  @extend .d-flex;
+  @extend .flex-wrap;
+  @extend .gap-2;
+}
+
+.buy-ticket-buttons {
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .gap-2;
+  @extend .mt-2;
+}
+
+.buy-ticket-button {
+  @extend .btn-primary;
+  @extend .d-flex;
+  @extend .gap-2;
+  @extend .text-start;
+}

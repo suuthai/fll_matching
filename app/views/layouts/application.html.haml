@@ -16,6 +16,22 @@
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"
   %body
-    %p.notice= notice
-    %p.alert= alert
     = yield
+
+    .toast-container
+      - [ [ alert, "text-bg-warning", "alert" ], [ notice, "", "status" ] ].each do |(alert_or_notice, toast_class, role)|
+        - if alert_or_notice.present?
+          .toast.fade.show{
+            class: toast_class,
+            role: role,
+            aria_live: "assertive",
+            aria_atomic: "true",
+            data: {
+              controller: "show-toast"
+            }
+          }
+            .toast-body
+              .d-flex.align-items-start.gap-2
+                %div= alert_or_notice
+                .text-end.ms-auto
+                  %button.btn-close{ type: "button", aria_label: "閉じる", data: { bs_dismiss: "toast" } }
