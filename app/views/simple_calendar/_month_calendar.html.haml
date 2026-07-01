@@ -1,0 +1,31 @@
+.simple-calendar
+  .calendar-heading.text-center
+    %nav.d-inline-flex.gap-1.align-items-center
+      :ruby
+        link_to_calendar = ->(label_key, default_label, url_method_name, disabled: false) {
+          link_to t(label_key, default: default_label),
+            disabled ? "#" : calendar.send(url_method_name),
+            class: "btn btn-secondary btn-sm" + (disabled ? " disabled" : ""),
+            aria: { disabled: disabled },
+            tabindex: -1
+        }
+
+      - today = Time.current.in_time_zone(@time_zone).to_date
+      - at_this_month = start_date.year == today.year && start_date.month == today.month
+      = link_to_calendar.call "simple_calendar.previous", "Previous", "url_for_previous_view", disabled: at_this_month
+      %time{ datetime: start_date.strftime('%Y-%m'), class: "calendar-title" }= I18n.l(start_date, format: :month)
+      = link_to_calendar.call "simple_calendar.today", "Today", "url_for_today_view", disabled: at_this_month
+      = link_to_calendar.call "simple_calendar.next", "Next", "url_for_next_view"
+
+  %table
+    %thead
+      %tr
+        - date_range.slice(0, 7).each do |day|
+          %th.text-center.fw-normal
+            = t('date.abbr_day_names')[day.wday]
+    %tbody
+      - date_range.each_slice(7) do |week|
+        %tr
+          - week.each do |day|
+            = content_tag :td, class: calendar.td_classes_for(day) do
+              - instance_exec(day, calendar.sorted_events_for(day), &passed_block)

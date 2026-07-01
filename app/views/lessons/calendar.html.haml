@@ -1,0 +1,42 @@
+= turbo_frame_tag "lessons-calendar" do
+
+  %div{ data: { controller: "latch", latch_name: "lessons-calendar" } }
+
+  .d-flex.flex-wrap.align-items-start.justify-content-center.gap-2
+    = form_with url: slots_lessons_path(@language),
+      data: { turbo_frame: "lessons-slots" },
+      method: :get do |form|
+
+      %input{ type: "hidden", name: "time_zone", value: @time_zone }
+
+      = month_calendar(time_zone: @time_zone) do |date|
+        :ruby
+          day = date.day
+          booking = @bookings_of_each_day[day] || {}
+          value = date.iso8601
+          id = "lessons-calendar-date-#{value}"
+          unavailable = day < @unavailable_before_day
+          disabled = unavailable || booking[:full]
+
+          mark = unavailable ? "-" :
+            booking[:booked_by_current_user] ? "*" :
+            booking[:full] ? "×" :
+            "〇"
+
+        %input.btn-check{
+          type: "radio",
+          id:,
+          disabled:,
+          value:,
+          name: "date",
+          onchange: "this.form.requestSubmit()"
+        }
+
+        %label.btn.btn-outline-primary.text-nowrap.d-inline-flex{
+          for: id,
+          class: disabled ? "disabled" : ""
+        }
+          %span= day
+          .ms-auto= mark
+
+    = turbo_frame_tag "lessons-slots", class: "d-block flex-grow-1 flex-shrink-0 container p-0"

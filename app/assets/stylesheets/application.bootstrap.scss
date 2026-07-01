@@ -1,20 +1,15 @@
+@use 'sass:map';
+
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
-button {
+button, input[type="submit"] {
   @extend .btn;
 }
 
+turbo-frame,
 form.button_to {
   display: contents;
-}
-
-.toast-container {
-  @extend .position-fixed;
-  @extend .bottom-0;
-  @extend .end-0;
-  @extend .py-2;
-  @extend .px-3;
 }
 
 header {
@@ -50,4 +45,32 @@ header {
   @extend .d-flex;
   @extend .gap-2;
   @extend .text-start;
+}
+
+#lessons-calendar {
+  label {
+    width: 60px;
+  }
+
+  .day.next-month > label,
+  .day.prev-month > label {
+    visibility: hidden;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: map.get($spacers, 1);
+  }
+}
+
+#lessons-slots {
+  flex-basis: 400px;
+}
+
+button .spinner-border {
+  display: none;
+}
+
+button[disabled] .spinner-border {
+  display: inline-block;
 }

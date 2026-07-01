@@ -1,0 +1,30 @@
+= turbo_stream.append "body" do
+  %div{ data: { controller: "latch", latch_name: "create-lesson" } }
+
+- if !@error.present?
+
+  = turbo_stream.append "toasts" do
+    .toast.fade{ data: { controller: "disposable-toast" } }
+      .toast-body 予約が完了しました。
+
+  = turbo_stream.replace "tickets-button" do
+    = render "home/tickets_button"
+
+- else
+
+  = turbo_stream.append "body" do
+    .modal.fade{
+      data: {
+        controller: "disposable-modal",
+        bs_backdrop: "static",
+        bs_keyboard: "false"
+      },
+      tabindex: -1
+    }
+      .modal-dialog.border-0
+        .modal-content
+          .modal-body.alert.alert-warning.m-0.d-flex.align-items-start.gap-1{ role: "alert" }
+            %div
+              = t "lessons.create.#{@error}"
+            .ms-auto
+              %button.btn-close{ type: "button", data: { bs_dismiss: "modal" } }

@@ -1,0 +1,7 @@
+= button_tag class: "btn-primary", id: "tickets-button",
+  data: { bs_toggle: "modal", bs_target: "#ticket-modal" } do
+
+  - if current_user.tickets_count <= 0
+    チケットを購入する
+  - else
+    = "購入済みのチケットが#{current_user.tickets_count}回分あります"

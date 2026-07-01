@@ -1,0 +1,23 @@
+ja:
+  languages:
+    thai: "タイ語"
+    vietnamese: "ベトナム語"
+    lao: "ラオ語(ラオス)"
+    khmer: "クメール語(カンボジア)"
+    burmese: "ミャンマー語"
+  time:
+    formats:
+      lesson_slot_long: "%Y年%m月%d日 %H:00-%H:50"
+      lesson_slot_short: "%H:00-%H:50"
+  date:
+    formats:
+      month: "%Y年%-m月"
+  simple_calendar:
+    previous: "前月"
+    today: "今月"
+    next: "翌月"
+  lessons:
+    create:
+      no_tickets: "チケットがありません。"
+      fully_booked: "同じタイミングで他のユーザーの予約で埋まってしまいました。別の時間で予約してください。"
+      an_error_occurred: "予約ができませんでした。しばらくしてからもう一度お試しください。"

@@ -4,5 +4,17 @@
 
 import { application } from "./application"
 
-import ShowToastController from "./show_toast_controller"
-application.register("show-toast", ShowToastController)
+import HomeController from "./home_controller"
+application.register("home", HomeController)
+
+import DisposableToastController from "./disposable_toast_controller"
+application.register("disposable-toast", DisposableToastController)
+
+import NewLessonModalController from "./new_lesson_modal_controller"
+application.register("new-lesson-modal", NewLessonModalController)
+
+import LatchController from "./latch_controller"
+application.register("latch", LatchController)
+
+import DisposableModalController from "./disposable_modal_controller"
+application.register("disposable-modal", DisposableModalController)

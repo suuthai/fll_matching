@@ -6,7 +6,7 @@ class CheckoutsController < ApplicationController
 
   def create
     plan = HomeHelper::TICKET_PLANS[params[:plan]]
-    return redirect_to root_path, alert: "無効なプランです" unless plan
+    return redirect_to language_root_path(language:), alert: "無効なプランです" unless plan
 
     checkout_session = Stripe::Checkout::Session.create(
       mode: "payment",
@@ -23,19 +23,19 @@ class CheckoutsController < ApplicationController
         user_id: current_user.id,
         tickets_count: plan[:tickets_count]
       },
-      success_url: checkout_success_url,
-      cancel_url: checkout_cancel_url
+      success_url: checkout_success_url(language:),
+      cancel_url: checkout_cancel_url(language:)
     )
 
     redirect_to checkout_session.url, allow_other_host: true
   end
 
   def success
-    redirect_to root_path, notice: "チケットを購入しました。"
+    redirect_to language_root_path(language:), notice: "チケットを購入しました。"
   end
 
   def cancel
-    redirect_to root_path, notice: "チケットの購入をキャンセルしました。"
+    redirect_to language_root_path(language:), notice: "チケットの購入をキャンセルしました。"
   end
 
   def webhook

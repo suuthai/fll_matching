@@ -1,36 +1,63 @@
-%header
-  %h1.logo= link_to "Fll Matching", root_path
-  .header-user
-    %i.bi.bi-person-fill
-    = current_user.email
+%body#body{ data: { controller: "home" } }
 
-  .header-controls
-    = button_tag class: "btn-primary",
-      data: { bs_toggle: "modal", bs_target: "#ticket-modal" } do
+  %header
+    %h1.logo= link_to "Fll Matching", language_root_path(@language)
 
-      - if current_user.tickets_count <= 0
-        チケットを購入する
-      - else
-        = "購入済みのチケットが#{current_user.tickets_count}回分あります"
+    %button.btn-secondary.dropdown-toggle{
+      type: "button",
+      data: { bs_toggle: "dropdown" },
+      aria_expanded: "false"
+    }
+      = t "languages.#{@language}"
 
-    = button_to "ログアウト", destroy_user_session_path,
-      method: :delete, class: "btn-secondary"
+    %ul.dropdown-menu
+      - User.instructional_languages.each do |(language)|
+        - if language != @language
+          %li
+            %a.dropdown-item{ href: language_root_path(language:) }
+              = t "languages.#{language}"
 
-%main
-  %h1 Home#index
-  %p Find me in app/views/home/index.html.erb
+    .header-user
+      %i.bi.bi-person-fill
+      = current_user.email
 
-#ticket-modal.modal.fade
-  .modal-dialog.modal-lg
-    .modal-content
-      .modal-header
-        %h5.modal-title チケット
-        %button.btn-close{ type: "button", data: { bs_dismiss: "modal" } }
-      .modal-body
-        - if current_user.tickets_count > 0
-          %div= "購入済みのチケットが#{current_user.tickets_count}回分あります。"
-        .buy-ticket-buttons
-          - ticket_plans.each do |plan_id, plan|
-            = button_to checkouts_path, params: { plan: plan_id }, data: { turbo: false }, class: "buy-ticket-button" do
-              %div= plan[:label]
-              .ms-auto= "#{plan[:price]}円+税"
+    .header-controls
+      = render "tickets_button"
+      = button_to "ログアウト", destroy_user_session_path,
+        method: :delete, class: "btn-secondary"
+
+  %main.px-3
+    = turbo_frame_tag "lessons-calendar", data: { src: calendar_lessons_path(@language) }
+
+  #ticket-modal.modal.fade
+    .modal-dialog.modal-lg
+      .modal-content
+        .modal-header
+          %h5.modal-title チケット
+          %button.btn-close{ type: "button", data: { bs_dismiss: "modal" } }
+        .modal-body
+          - if current_user.tickets_count > 0
+            %div= "購入済みのチケットが#{current_user.tickets_count}回分あります。"
+          .buy-ticket-buttons
+            - ticket_plans.each do |plan_id, plan|
+              = button_to checkouts_path, params: { plan: plan_id }, data: { turbo: false }, class: "buy-ticket-button" do
+                %div= plan[:label]
+                .ms-auto= "#{plan[:price]}円+税"
+
+  #toasts.toast-container.position-fixed.bottom-0.end-0.py-2.px-3
+    - [ [ alert, "text-bg-warning", "alert" ], [ notice, "", "status" ] ].each do |(alert_or_notice, toast_class, role)|
+      - if alert_or_notice.present?
+        .toast.fade.show{
+          class: toast_class,
+          role: role,
+          aria_live: "assertive",
+          aria_atomic: "true",
+          data: {
+            controller: "disposable-toast"
+          }
+        }
+          .toast-body
+            .d-flex.align-items-start.gap-2
+              %div= alert_or_notice
+              .text-end.ms-auto
+                %button.btn-close{ type: "button", aria_label: "閉じる", data: { bs_dismiss: "toast" } }

@@ -13,7 +13,7 @@ RSpec.describe "Checkouts", type: :request do
       end
 
       it "Stripeの決済ページにリダイレクトする" do
-        post checkouts_path, params: { plan: "only_one" }
+        post checkouts_path(language: :thai), params: { plan: "only_one" }
         expect(response).to redirect_to("https://checkout.stripe.com/test")
       end
 
@@ -28,14 +28,14 @@ RSpec.describe "Checkouts", type: :request do
           )
         ).and_return(stripe_session)
 
-        post checkouts_path, params: { plan: "only_one" }
+        post checkouts_path(language: :thai), params: { plan: "only_one" }
       end
     end
 
     context "無効なプランを指定した場合" do
       it "ルートページにリダイレクトしてアラートを表示する" do
-        post checkouts_path, params: { plan: "invalid_plan" }
-        expect(response).to redirect_to(root_path)
+        post checkouts_path(language: :thai), params: { plan: "invalid_plan" }
+        expect(response).to redirect_to(language_root_path(:thai))
         expect(flash[:alert]).to eq("無効なプランです")
       end
     end

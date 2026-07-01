@@ -1,0 +1,28 @@
+= turbo_frame_tag "lessons-slots" do
+
+  = form_with url: new_lesson_path(@language),
+    class: "row row-cols-2 g-1",
+    method: :get,
+    data: { turbo_stream: true } do |form|
+
+    - @slots.each do |slot|
+
+      :ruby
+        disabled = slot[:booked_by_current_user] ||
+          slot[:full] ||
+          slot[:unavailable]
+
+        mark = slot[:unavailable] ? "-" :
+          slot[:booked_by_current_user] ? "*予約済み" :
+          slot[:full] ? "×" :
+          "〇"
+
+      .col
+        = form.button type: :submit,
+          class: "btn-outline-primary text-nowrap d-inline-flex w-100",
+          disabled:,
+          name: "starts_at",
+          value: slot[:time].iso8601 do
+
+          %div= l slot[:time], format: :lesson_slot_short
+          .ms-auto= mark
