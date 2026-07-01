@@ -18,4 +18,8 @@ class User < ApplicationRecord
   }
 
   validates :name, presence: true
+
+  def recent_instructor
+    lessons_as_student.order(created_at: :desc).first&.instructor
+  end
 end

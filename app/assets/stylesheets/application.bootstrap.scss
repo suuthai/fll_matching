@@ -32,6 +32,10 @@ form.button_to {
   input[type="checkbox"] + label {
     @extend .form-check-label;
   }
+
+  select {
+    @extend .form-select;
+  }
 }
 
 .actions {

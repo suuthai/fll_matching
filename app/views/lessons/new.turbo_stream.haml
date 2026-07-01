@@ -1,35 +1,47 @@
-= turbo_stream.append "body" do
+- if !@error.present?
 
-  .modal.fade{
-    data: {
-      controller: "new-lesson-modal",
-      bs_backdrop: "static",
-      bs_keyboard: "false"
-    },
-    tabindex: -1
-  }
+  = turbo_stream.append "body" do
+    .modal.fade{
+      data: {
+        controller: "new-lesson-modal",
+        bs_backdrop: "static",
+        bs_keyboard: "false"
+      },
+      tabindex: -1
+    }
 
-    .modal-dialog
-      = form_with model: @lesson,
-        data: { action: "turbo:submit-start->new-lesson-modal#submitStart" },
-        class: "modal-content" do |form|
+      .modal-dialog
+        = form_with model: @lesson,
+          data: { action: "turbo:submit-start->new-lesson-modal#submitStart" },
+          class: "modal-content" do |form|
 
-        = form.hidden_field :starts_at
+          = form.hidden_field :starts_at
 
-        .modal-body
-          %p
-            %span= t "languages.#{@language}"
-            %span= l @starts_at, format: :lesson_slot_long
-          %div
-            チケットを1回分消費して、レッスンを予約しますか?
-          %div
-            購入済みのチケットが
-            = current_user.tickets_count
-            回分あります。
+          .modal-body
+            .field
+              %span= t "languages.#{@language}"
+              %span= l @starts_at, format: :lesson_slot_long
+            .field
+              = form.label :instructor
+              = form.select :instructor_id,
+                @instructors.map { |instructor| [ instructor.name, instructor.id ] },
+                selected: @lesson.instructor.id
+            .field
+              チケットを1回分消費して、レッスンを予約しますか?
+            .field
+              購入済みのチケットが
+              = current_user.tickets_count
+              回分あります。
 
-        .modal-footer
-          %button.btn-primary
-            .spinner-border.spinner-border-sm{ aria_hidden: "true" }
-            %span 予約する
-          %button.btn-secondary{ type: "button", data: { bs_dismiss: "modal" } }
-            予約しない
+          .modal-footer
+            %button.btn-primary
+              .spinner-border.spinner-border-sm{ aria_hidden: "true" }
+              %span 予約する
+            %button.btn-secondary{ type: "button", data: { bs_dismiss: "modal" } }
+              予約しない
+
+- else
+
+  = turbo_stream.append "body" do
+    %div{ data: { controller: "reload-lessons-calendar" } }
+    = render "error", error: @error

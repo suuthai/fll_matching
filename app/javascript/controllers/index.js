@@ -18,3 +18,6 @@ application.register("latch", LatchController)
 
 import DisposableModalController from "./disposable_modal_controller"
 application.register("disposable-modal", DisposableModalController)
+
+import ReloadLessonsCalendarController from "./reload_lessons_calendar_controller"
+application.register("reload-lessons-calendar", ReloadLessonsCalendarController)

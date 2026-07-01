@@ -47,43 +47,45 @@ class LessonsController < ApplicationController
     # Time.zone.parseではなく意図的にTime.parseを使っている。
     @starts_at = Time.parse params[:starts_at]
 
-    @lesson = Lesson.new starts_at: @starts_at
+    unavailable_instructor_ids = Lesson.select(:instructor_id)
+      .where(starts_at: @starts_at)
+
+    @instructors = User
+      .where(instructional_language: language)
+      .where.not(id: unavailable_instructor_ids)
+
+    return render_error :fully_booked if @instructors.size <= 0
+
+    recent_instructor = current_user.recent_instructor
+
+    @lesson = Lesson.new starts_at: @starts_at,
+      instructor: (recent_instructor && @instructors.find { _1.id == recent_instructor.id }) ||
+        @instructors.sample
+
     @language = language
   end
 
   def create
-    return render_error :no_ticket if current_user.tickets_count <= 0
-
-    lesson = Lesson.new({
-      student: current_user,
-      **params.require(:lesson).permit(:starts_at)
-    })
+    return render_error :no_tickets if current_user.tickets_count <= 0
 
     begin
       ActiveRecord::Base.transaction do
-        unavailable_instructor_ids = Lesson.select(:instructor_id)
-          .where(starts_at: lesson.starts_at)
+        Lesson.create!({
+          student: current_user,
+          **params.require(:lesson).permit(:starts_at, :instructor_id)
+        })
 
-        available_instructors = User.select(:id)
-          .where(instructional_language: language)
-          .where.not(id: unavailable_instructor_ids)
-
-        raise NoAvailableInstructor if available_instructors.size <= 0
-
-        lesson.instructor = available_instructors.sample
-        lesson.save!
         current_user.decrement!(:tickets_count)
       end
-    rescue NoAvailableInstructor
+    rescue ActiveRecord::RecordNotUnique
       render_error :fully_booked
-    rescue
+    rescue => error
+      Rails.logger.error error
       render_error :an_error_occurred
     end
   end
 
   private
-
-  NoAvailableInstructor = Class.new(StandardError)
 
   def time_zone
     @time_zone ||= params[:time_zone] || Time.zone.name

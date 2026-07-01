@@ -1,4 +1,8 @@
 ja:
+  activerecord:
+    attributes:
+      lesson:
+        instructor: "講師"
   languages:
     thai: "タイ語"
     vietnamese: "ベトナム語"

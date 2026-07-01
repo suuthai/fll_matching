@@ -51,7 +51,10 @@ RSpec.describe "Lessons", type: :request do
     end
 
     context "ログイン済みの場合" do
-      before { sign_in student }
+      before do
+        sign_in student
+        instructor
+      end
 
       it "200を返す" do
         get new_lesson_path(language: :thai), params: { starts_at: starts_at.iso8601 }, as: :turbo_stream
@@ -83,15 +86,19 @@ RSpec.describe "Lessons", type: :request do
       context "空き講師がいる場合" do
         before { instructor }
 
+        let(:lesson_params) { { lesson: { starts_at: starts_at.iso8601, instructor_id: instructor.id } } }
+
         it "レッスンを作成する" do
           expect {
-            post lessons_path(language: :thai), params: lesson_params, as: :turbo_stream
+            post lessons_path(language: :thai), params: lesson_params,
+              headers: { "Accept" => "text/vnd.turbo-stream.html" }
           }.to change(Lesson, :count).by(1)
         end
 
         it "チケット枚数を1減らす" do
           expect {
-            post lessons_path(language: :thai), params: lesson_params, as: :turbo_stream
+            post lessons_path(language: :thai), params: lesson_params,
+              headers: { "Accept" => "text/vnd.turbo-stream.html" }
           }.to change { student.reload.tickets_count }.by(-1)
         end
       end
