@@ -1,0 +1,9 @@
+- content_for :view_title do
+  パスワード再設定
+
+= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
+  .field
+    = f.label :email
+    = f.email_field :email, autofocus: true, autocomplete: "email"
+  .actions
+    = f.submit "再設定の手順をメールで受信する"

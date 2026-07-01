@@ -12,6 +12,38 @@ form.button_to {
   display: contents;
 }
 
+.field {
+  + .field {
+    @extend .mt-2;
+  }
+
+  label:first-child {
+    @extend .form-label;
+  }
+
+  input[type="text"], input[type="password"], input[type="email"] {
+    @extend .form-control;
+  }
+
+  input[type="checkbox"] {
+    @extend .form-check-input;
+  }
+
+  input[type="checkbox"] + label {
+    @extend .form-check-label;
+  }
+}
+
+.actions {
+  @extend .text-end;
+  @extend .mt-2;
+
+  input[type="submit"] {
+    @extend .btn;
+    @extend .btn-primary;
+  }
+}
+
 header {
   @extend .d-flex;
   @extend .flex-wrap;
