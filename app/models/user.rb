@@ -16,5 +16,6 @@ class User < ApplicationRecord
     khmer: 3,
     burmese: 4
   }
-  
+
+  validates :name, presence: true
 end
