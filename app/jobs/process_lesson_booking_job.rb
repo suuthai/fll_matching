@@ -1,4 +1,4 @@
-class FetchZoomUrlJob < ApplicationJob
+class ProcessLessonBookingJob < ApplicationJob
   queue_as :default
   retry_on ZoomClient::ApiError, wait: :polynomially_longer, attempts: 5
 
@@ -9,5 +9,7 @@ class FetchZoomUrlJob < ApplicationJob
       start_time: lesson.starts_at
     )
     lesson.update!(zoom_url:)
+    LessonMailer.student_confirmation(lesson).deliver_later
+    LessonMailer.instructor_notification(lesson).deliver_later
   end
 end

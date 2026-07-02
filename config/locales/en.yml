@@ -29,3 +29,12 @@
 
 en:
   hello: "Hello world"
+  languages:
+    thai: "Thai"
+    vietnamese: "Vietnamese"
+    lao: "Lao"
+    khmer: "Khmer"
+    burmese: "Burmese"
+  time:
+    formats:
+      lesson_slot_long: "%-d %B %Y, %H:00-%H:50"

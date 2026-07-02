@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FetchZoomUrlJob, type: :job do
+RSpec.describe ProcessLessonBookingJob, type: :job do
   describe "#perform" do
     let(:lesson) { create(:lesson) }
     let(:zoom_url) { "https://zoom.us/j/123456789?pwd=abcdef" }
@@ -21,6 +21,18 @@ RSpec.describe FetchZoomUrlJob, type: :job do
       ).and_return(zoom_url)
 
       described_class.perform_now(lesson.id)
+    end
+
+    it "生徒に確認メールを送信する" do
+      expect {
+        described_class.perform_now(lesson.id)
+      }.to have_enqueued_mail(LessonMailer, :student_confirmation)
+    end
+
+    it "講師に通知メールを送信する" do
+      expect {
+        described_class.perform_now(lesson.id)
+      }.to have_enqueued_mail(LessonMailer, :instructor_notification)
     end
   end
 end

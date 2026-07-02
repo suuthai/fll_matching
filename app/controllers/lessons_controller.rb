@@ -85,7 +85,7 @@ class LessonsController < ApplicationController
         })
 
         current_user.decrement!(:tickets_count)
-        FetchZoomUrlJob.perform_later(lesson.id)
+        ProcessLessonBookingJob.perform_later(lesson.id)
       end
     rescue ActiveRecord::RecordNotUnique
       render_error :fully_booked

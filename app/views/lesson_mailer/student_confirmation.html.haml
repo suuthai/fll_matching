@@ -1,0 +1,20 @@
+%p= "#{@lesson.student.name} さん"
+
+%p 以下の内容でレッスンが予約されました。
+
+%table
+  %tbody
+    %tr
+      %th 言語
+      %td= t "languages.#{@lesson.instructor.instructional_language}"
+    %tr
+      %th 日時
+      %td= l @lesson.starts_at.in_time_zone("Asia/Tokyo"), format: :lesson_slot_long
+    %tr
+      %th 講師
+      %td= @lesson.instructor.name
+    %tr
+      %th Zoom URL
+      %td= link_to @lesson.zoom_url, @lesson.zoom_url
+
+%p レッスン当日は上記の Zoom URL からご参加ください。

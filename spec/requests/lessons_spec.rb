@@ -159,11 +159,11 @@ RSpec.describe "Lessons", type: :request do
           }.to change { student.reload.tickets_count }.by(-1)
         end
 
-        it "FetchZoomUrlJobをエンキューする" do
+        it "ProcessLessonBookingJobをエンキューする" do
           expect {
             post lessons_path(language: :thai), params: lesson_params,
               headers: { "Accept" => "text/vnd.turbo-stream.html" }
-          }.to have_enqueued_job(FetchZoomUrlJob)
+          }.to have_enqueued_job(ProcessLessonBookingJob)
         end
       end
 

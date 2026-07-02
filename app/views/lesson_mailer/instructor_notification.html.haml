@@ -1,0 +1,18 @@
+%p= "Dear #{@lesson.instructor.name},"
+
+%p A new lesson has been booked.
+
+%table
+  %tbody
+    %tr
+      %th Language
+      %td= t "languages.#{@lesson.instructor.instructional_language}", locale: :en
+    %tr
+      %th Date & Time
+      %td= l @lesson.starts_at.in_time_zone("Asia/Tokyo"), format: :lesson_slot_long, locale: :en
+    %tr
+      %th Student
+      %td= @lesson.student.name
+    %tr
+      %th Zoom URL
+      %td= link_to @lesson.zoom_url, @lesson.zoom_url
