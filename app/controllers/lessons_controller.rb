@@ -9,7 +9,7 @@ class LessonsController < ApplicationController
       start_time.next_month.beginning_of_month,
       slot_hours.size
 
-    @unavailable_before_day = start_time.month != current_time.month ? 0 :
+    @unavailable_before_day = start_time.to_date != current_time.to_date ? 0 :
       slot_hours.last <= current_time.hour ? current_time.day + 1 :
       current_time.day
 
@@ -35,7 +35,7 @@ class LessonsController < ApplicationController
       }
     }
 
-    if time_of_this_date.day == current_time.day
+    if time_of_this_date.to_date == current_time.to_date
       @slots.each { |slot|
         slot[:unavailable] = slot[:time].hour <= current_time.hour
       }
