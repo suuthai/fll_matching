@@ -27,7 +27,29 @@
         method: :delete, class: "btn-secondary"
 
   %main.px-3
-    = turbo_frame_tag "lessons-calendar", data: { src: calendar_lessons_path(@language) }
+    .d-flex.flex-row.flex-wrap.align-items-start.justify-content-center.gap-2
+      .d-flex.flex-column.align-items-stretch.justify-content-start.gap-2
+        .d-flex.flex-row.gap-2.text-nowrap.align-items-center
+          %div= t "activerecord.attributes.lesson.instructor"
+          %div
+            %select#instructor-filter.form-select{
+              data: { action: "change->home#changeInstructorFilter" }
+            }
+              %option{ value: "" } (誰でもよい)
+              - @instructors.each do |instructor|
+                %option{
+                  value: instructor.id,
+                  selected: instructor.id == @initially_selected_instructor_id
+                }
+                  = instructor.name
+
+        - src = calendar_lessons_path(@language)
+        - instructor_src = instructor_calendar_lessons_path(@language, ":instructor_id")
+        = turbo_frame_tag "lessons-calendar",
+          class: "d-block flex-grow-1",
+          data: { src:, instructor_src: }
+
+      = turbo_frame_tag "lessons-slots", class: "d-block flex-grow-1 flex-shrink-0 container p-0"
 
   #ticket-modal.modal.fade
     .modal-dialog.modal-lg

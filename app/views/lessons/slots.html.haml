@@ -1,6 +1,6 @@
 = turbo_frame_tag "lessons-slots" do
 
-  = form_with url: new_lesson_path(@language),
+  = form_with url: @new_path,
     class: "row row-cols-2 g-1",
     method: :get,
     data: { turbo_stream: true } do |form|

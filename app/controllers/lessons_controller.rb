@@ -7,14 +7,17 @@ class LessonsController < ApplicationController
     @bookings_of_each_day = bookings_of_each :day,
       start_time.beginning_of_month,
       start_time.next_month.beginning_of_month,
-      instructors_count * slot_hours.size
+      slot_hours.size
 
     @unavailable_before_day = start_time.month != current_time.month ? 0 :
       slot_hours.last <= current_time.hour ? current_time.day + 1 :
       current_time.day
 
-    @language = language
     @time_zone = time_zone
+
+    @slots_path = instructor_id ?
+      instructor_slots_lessons_path(language:, instructor_id:) :
+      slots_lessons_path(language:)
   end
 
   def slots
@@ -23,7 +26,7 @@ class LessonsController < ApplicationController
     bookings_of_each_slot = bookings_of_each :hour,
       time_of_this_date.beginning_of_day,
       time_of_this_date.tomorrow.beginning_of_day,
-      instructors_count
+      1
 
     @slots = slot_hours.map { |hour|
       {
@@ -38,7 +41,9 @@ class LessonsController < ApplicationController
       }
     end
 
-    @language = language
+    @new_path = instructor_id ?
+      instructor_new_lesson_path(language:, instructor_id:) :
+      new_lesson_path(language:)
   end
 
   def new
@@ -47,19 +52,23 @@ class LessonsController < ApplicationController
     # Time.zone.parseではなく意図的にTime.parseを使っている。
     @starts_at = Time.parse params[:starts_at]
 
-    unavailable_instructor_ids = Lesson.select(:instructor_id)
-      .where(starts_at: @starts_at)
+    @instructors, initially_selected_instructor_id = if instructor_id
+      [ [User.find(instructor_id)], instructor_id ]
+    else
+      unavailable_instructor_ids = Lesson.select(:instructor_id)
+        .where(starts_at: @starts_at)
 
-    @instructors = User
-      .where(instructional_language: language)
-      .where.not(id: unavailable_instructor_ids)
+      available_instructors = User
+        .where(instructional_language: language)
+        .where.not(id: unavailable_instructor_ids)
 
-    return render_error :fully_booked if @instructors.size <= 0
+      return render_error :fully_booked if available_instructors.size <= 0
 
-    recent_instructor = current_user.recent_instructor
+      [ available_instructors, current_user.recent_instructor&.id ]
+    end
 
     @lesson = Lesson.new starts_at: @starts_at,
-      instructor: (recent_instructor && @instructors.find { _1.id == recent_instructor.id }) ||
+      instructor: @instructors.find { _1.id == initially_selected_instructor_id } ||
         @instructors.sample
 
     @language = language
@@ -91,6 +100,10 @@ class LessonsController < ApplicationController
     @time_zone ||= params[:time_zone] || Time.zone.name
   end
 
+  def instructor_id
+    params[:instructor_id]
+  end
+
   def current_time
     @current_time ||= Time.current.in_time_zone(time_zone)
   end
@@ -110,10 +123,19 @@ class LessonsController < ApplicationController
     }.sort
   end
 
-  def bookings_of_each(date_method_name, from, to, max_lessons_count)
-    Lesson
-      .joins(:instructor)
-      .where(users: { instructional_language: language })
+  def bookings_of_each(date_method_name, from, to, lessons_count_coefficient)
+    records = Lesson.joins(:instructor)
+
+    records, max_lessons_count = instructor_id ?
+      [
+        records.where("instructor_id = ? OR student_id = ?", instructor_id, current_user.id),
+        lessons_count_coefficient
+      ] : [
+        records.where(users: { instructional_language: language }),
+        instructors_count * lessons_count_coefficient
+      ]
+
+    records
       .where("starts_at >= ? AND starts_at < ?", from, to)
       .group_by { |lesson| lesson.starts_at.in_time_zone(time_zone).send(date_method_name) }
       .transform_values { |lessons|

@@ -22,7 +22,7 @@
               %span= t "languages.#{@language}"
               %span= l @starts_at, format: :lesson_slot_long
             .field
-              = form.label :instructor
+              = form.label :instructor_id, t("activerecord.attributes.lesson.instructor")
               = form.select :instructor_id,
                 @instructors.map { |instructor| [ instructor.name, instructor.id ] },
                 selected: @lesson.instructor.id

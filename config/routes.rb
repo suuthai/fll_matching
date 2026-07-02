@@ -20,6 +20,12 @@ Rails.application.routes.draw do
         get "slots"
       end
     end
+
+    scope "instructors/:instructor_id" do
+      get "calendar", to: "lessons#calendar", as: :instructor_calendar_lessons
+      get "slots", to: "lessons#slots", as: :instructor_slots_lessons
+      get "new", to: "lessons#new", as: :instructor_new_lesson
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -63,6 +63,63 @@ RSpec.describe "Lessons", type: :request do
     end
   end
 
+  describe "GET /:language/instructors/:instructor_id/calendar" do
+    context "未ログインの場合" do
+      before { get instructor_calendar_lessons_path(language: :thai, instructor_id: instructor.id), params: { time_zone: } }
+      include_examples "認証が必要"
+    end
+
+    context "ログイン済みの場合" do
+      before { sign_in student }
+
+      it "200を返す" do
+        get instructor_calendar_lessons_path(language: :thai, instructor_id: instructor.id), params: { time_zone: }
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "GET /:language/instructors/:instructor_id/slots" do
+    context "未ログインの場合" do
+      before { get instructor_slots_lessons_path(language: :thai, instructor_id: instructor.id), params: { date: starts_at.iso8601, time_zone: } }
+      include_examples "認証が必要"
+    end
+
+    context "ログイン済みの場合" do
+      before { sign_in student }
+
+      it "200を返す" do
+        get instructor_slots_lessons_path(language: :thai, instructor_id: instructor.id), params: { date: starts_at.iso8601, time_zone: }
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
+
+  describe "GET /:language/instructors/:instructor_id/new" do
+    context "未ログインの場合" do
+      before { get instructor_new_lesson_path(language: :thai, instructor_id: instructor.id), params: { starts_at: starts_at.iso8601 } }
+      include_examples "認証が必要"
+    end
+
+    context "ログイン済みの場合" do
+      before { sign_in student }
+
+      it "200を返す" do
+        get instructor_new_lesson_path(language: :thai, instructor_id: instructor.id), params: { starts_at: starts_at.iso8601 }, as: :turbo_stream
+        expect(response).to have_http_status(:ok)
+      end
+
+      context "講師がすでに予約済みの場合でも" do
+        before { create(:lesson, instructor:, starts_at:) }
+
+        it "200を返す" do
+          get instructor_new_lesson_path(language: :thai, instructor_id: instructor.id), params: { starts_at: starts_at.iso8601 }, as: :turbo_stream
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+  end
+
   describe "POST /:language/lessons" do
     let(:lesson_params) { { lesson: { starts_at: starts_at.iso8601 } } }
 
@@ -120,6 +177,33 @@ RSpec.describe "Lessons", type: :request do
         it "チケット枚数を変更しない" do
           expect {
             post lessons_path(language: :thai), params: lesson_params, as: :turbo_stream
+          }.not_to change { student.reload.tickets_count }
+        end
+      end
+
+      context "同じ日時に別の講師とのレッスンをすでに予約している場合" do
+        let(:instructor2) { create(:user, role: :instructor, instructional_language: :thai) }
+        before { create(:lesson, student:, instructor: instructor2, starts_at:) }
+
+        let(:lesson_params) { { lesson: { starts_at: starts_at.iso8601, instructor_id: instructor.id } } }
+
+        it "422を返す" do
+          post lessons_path(language: :thai), params: lesson_params,
+            headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it "レッスンを作成しない" do
+          expect {
+            post lessons_path(language: :thai), params: lesson_params,
+              headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          }.not_to change(Lesson, :count)
+        end
+
+        it "チケット枚数を変更しない" do
+          expect {
+            post lessons_path(language: :thai), params: lesson_params,
+              headers: { "Accept" => "text/vnd.turbo-stream.html" }
           }.not_to change { student.reload.tickets_count }
         end
       end
