@@ -4,6 +4,13 @@ import LatchController from "./latch_controller"
 // Connects to data-controller="home"
 export default class extends Controller {
   connect() {
+    const studentLessonsFrame = document.getElementById("booked-lessons"),
+      params = new URLSearchParams(),
+      timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    params.set("time_zone", timeZone);
+    studentLessonsFrame.src = studentLessonsFrame.dataset.src + "?" + params;
+
     this.changeInstructorFilter();
   }
 

@@ -10,5 +10,6 @@ export default class extends DisposableModalController {
     await LatchController.unlatching("create-lesson");
     this.hideModal();
     ReloadLessonsCalendarController.reload();
+    document.getElementById("booked-lessons").reload();
   }
 }

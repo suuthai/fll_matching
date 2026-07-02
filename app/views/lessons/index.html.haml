@@ -1,0 +1,22 @@
+= turbo_frame_tag "booked-lessons" do
+  - if @lessons.size > 0
+    %table.table
+      %thead
+        %tr
+          %th{ scope: :col } レッスン日時
+          %th{ scope: :col } 講師
+          %th{ scope: :col }
+      %tbody
+        - @lessons.each do |lesson|
+          %tr
+            %td= l lesson[:starts_at], format: :lesson_slot_long
+            %td= lesson[:instructor_name]
+            %td
+              - zoom_url = lesson[:zoom_url]
+              - in_preparation = !zoom_url
+              = link_to in_preparation ? "Zoomを準備しています..." : "Zoomを開く",
+                zoom_url || "#",
+                class: "btn btn-outline-primary btn-sm #{"disabled" if in_preparation}",
+                target: "_blank",
+                rel: "noopener noreferrer",
+                aria: { disabled: in_preparation }

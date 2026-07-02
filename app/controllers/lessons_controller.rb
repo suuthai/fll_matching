@@ -79,12 +79,13 @@ class LessonsController < ApplicationController
 
     begin
       ActiveRecord::Base.transaction do
-        Lesson.create!({
+        lesson = Lesson.create!({
           student: current_user,
           **params.require(:lesson).permit(:starts_at, :instructor_id)
         })
 
         current_user.decrement!(:tickets_count)
+        FetchZoomUrlJob.perform_later(lesson.id)
       end
     rescue ActiveRecord::RecordNotUnique
       render_error :fully_booked
@@ -92,6 +93,21 @@ class LessonsController < ApplicationController
       Rails.logger.error error
       render_error :an_error_occurred
     end
+  end
+
+  def index
+    @lessons = Lesson.joins(:instructor)
+      .select("lessons.starts_at, lessons.zoom_url, users.name AS instructor_name")
+      .where(student_id:, users: { instructional_language: language })
+      .where("starts_at >= ?", 1.hour.ago)
+      .order(starts_at: :asc)
+      .map { |lesson|
+        {
+          starts_at: lesson.starts_at.in_time_zone(time_zone),
+          instructor_name: lesson.instructor_name,
+          zoom_url: lesson.zoom_url
+        }
+      }
   end
 
   private
@@ -102,6 +118,10 @@ class LessonsController < ApplicationController
 
   def instructor_id
     params[:instructor_id]
+  end
+
+  def student_id
+    params[:student_id]
   end
 
   def current_time

@@ -158,6 +158,13 @@ RSpec.describe "Lessons", type: :request do
               headers: { "Accept" => "text/vnd.turbo-stream.html" }
           }.to change { student.reload.tickets_count }.by(-1)
         end
+
+        it "FetchZoomUrlJobをエンキューする" do
+          expect {
+            post lessons_path(language: :thai), params: lesson_params,
+              headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          }.to have_enqueued_job(FetchZoomUrlJob)
+        end
       end
 
       context "空き講師がいない場合" do
@@ -205,6 +212,43 @@ RSpec.describe "Lessons", type: :request do
             post lessons_path(language: :thai), params: lesson_params,
               headers: { "Accept" => "text/vnd.turbo-stream.html" }
           }.not_to change { student.reload.tickets_count }
+        end
+      end
+    end
+  end
+
+  describe "GET /:language/students/:student_id/lessons" do
+    context "未ログインの場合" do
+      before { get student_lessons_path(language: :thai, student_id: student.id) }
+      include_examples "認証が必要"
+    end
+
+    context "ログイン済みの場合" do
+      before { sign_in student }
+
+      it "200を返す" do
+        get student_lessons_path(language: :thai, student_id: student.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      context "予約済みのレッスンがある場合" do
+        before { create(:lesson, student:, instructor:, starts_at:) }
+
+        it "講師名が含まれる" do
+          get student_lessons_path(language: :thai, student_id: student.id), params: { time_zone: }
+          expect(response.body).to include(instructor.name)
+        end
+
+        it "レッスン日時が含まれる" do
+          get student_lessons_path(language: :thai, student_id: student.id), params: { time_zone: }
+          expect(response.body).to include(I18n.l(starts_at.in_time_zone(time_zone), format: :lesson_slot_long))
+        end
+      end
+
+      context "予約済みのレッスンがない場合" do
+        it "レッスン一覧が空である" do
+          get student_lessons_path(language: :thai, student_id: student.id)
+          expect(response.body).not_to include("btn btn-outline-primary")
         end
       end
     end

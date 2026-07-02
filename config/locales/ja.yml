@@ -11,7 +11,7 @@ ja:
     burmese: "ミャンマー語"
   time:
     formats:
-      lesson_slot_long: "%Y年%m月%d日 %H:00-%H:50"
+      lesson_slot_long: "%Y年%-m月%-d日 %H:00-%H:50"
       lesson_slot_short: "%H:00-%H:50"
   date:
     formats:

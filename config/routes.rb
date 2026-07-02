@@ -26,6 +26,10 @@ Rails.application.routes.draw do
       get "slots", to: "lessons#slots", as: :instructor_slots_lessons
       get "new", to: "lessons#new", as: :instructor_new_lesson
     end
+
+    scope "students/:student_id" do
+      get "lessons", to: "lessons#index", as: :student_lessons
+    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

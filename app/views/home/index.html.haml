@@ -27,10 +27,14 @@
         method: :delete, class: "btn-secondary"
 
   %main.px-3
+    %div
+      = turbo_frame_tag "booked-lessons",
+        data: { src: student_lessons_path(@language, current_user.id) }
+    
     .d-flex.flex-row.flex-wrap.align-items-start.justify-content-center.gap-2
       .d-flex.flex-column.align-items-stretch.justify-content-start.gap-2
         .d-flex.flex-row.gap-2.text-nowrap.align-items-center
-          %div= t "activerecord.attributes.lesson.instructor"
+          %div レッスンを予約したい講師
           %div
             %select#instructor-filter.form-select{
               data: { action: "change->home#changeInstructorFilter" }
