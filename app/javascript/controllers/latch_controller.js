@@ -14,11 +14,11 @@ export default class extends Controller {
   }
 
   connect() {
-    const { latchName } = this.element.dataset,
+    const { latchName, latchValue } = this.element.dataset,
       functions = resolveFunctionsOfEachLatch[latchName] || [];
 
     for (const resolve of functions) {
-      resolve();
+      resolve(latchValue);
     }
 
     functions.length = 0;

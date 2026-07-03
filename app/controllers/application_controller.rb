@@ -7,4 +7,9 @@ class ApplicationController < ActionController::Base
   def language
     params[:language]
   end
+
+  def after_sign_in_path_for(resource)
+    return admin_root_path if resource.admin?
+    super
+  end
 end

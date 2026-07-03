@@ -1,0 +1,27 @@
+= turbo_frame_tag "instructors" do
+
+  .d-flex.flex-column.gap-2
+    %div
+      = link_to "講師を追加する", new_admin_instructor_path,
+        class: "btn btn-primary",
+        data: { turbo_stream: true }
+
+    -# この判定の後にレコードをループするので、ここでは .present? を使うのが正しいはず
+    - if @instructors.present?
+      = form_with model: User.new,
+        data: { controller: "admin--instructors-form", action: "turbo:submit-start->admin--instructors-form#submitStart" },
+        url: "" do |form|
+
+        %table.table
+          %thead
+            %tr
+              - [ :name, :email, :instructional_language ].each do
+                %th{ scope: :col }= User.human_attribute_name(_1)
+              %th{ scope: :col }
+          %tbody
+            - @instructors.each do |instructor|
+              %tr
+                %td= instructor.name
+                %td= instructor.email
+                %td= t "languages.#{instructor.instructional_language}"
+                %td (操作)

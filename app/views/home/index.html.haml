@@ -1,8 +1,8 @@
 %body#body{ data: { controller: "home" } }
 
-  %header
-    %h1.logo= link_to "Fll Matching", language_root_path(@language)
-
+  = content_for :header_controls do
+    = render "tickets_button"
+  = render "shared/header", home_path: language_root_path(@language) do
     %button.btn-secondary.dropdown-toggle{
       type: "button",
       data: { bs_toggle: "dropdown" },
@@ -16,15 +16,6 @@
           %li
             %a.dropdown-item{ href: language_root_path(language:) }
               = t "languages.#{language}"
-
-    .header-user
-      %i.bi.bi-person-fill
-      = current_user.name
-
-    .header-controls
-      = render "tickets_button"
-      = button_to "ログアウト", destroy_user_session_path,
-        method: :delete, class: "btn-secondary"
 
   %main.px-3
     %div
@@ -70,20 +61,8 @@
                 %div= plan[:label]
                 .ms-auto= "#{plan[:price]}円+税"
 
-  #toasts.toast-container.position-fixed.bottom-0.end-0.py-2.px-3
-    - [ [ alert, "text-bg-warning", "alert" ], [ notice, "", "status" ] ].each do |(alert_or_notice, toast_class, role)|
-      - if alert_or_notice.present?
-        .toast.fade.show{
-          class: toast_class,
-          role: role,
-          aria_live: "assertive",
-          aria_atomic: "true",
-          data: {
-            controller: "disposable-toast"
-          }
-        }
-          .toast-body
-            .d-flex.align-items-start.gap-2
-              %div= alert_or_notice
-              .text-end.ms-auto
-                %button.btn-close{ type: "button", aria_label: "閉じる", data: { bs_dismiss: "toast" } }
+  = content_for :toasts do
+    - [ [ alert, true ], [ notice, false] ].each do |(message, alert)|
+      - if message.present?
+        = render "shared/toast", message:, alert:
+  = render "shared/toast_container"

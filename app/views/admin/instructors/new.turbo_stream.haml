@@ -1,0 +1,25 @@
+= turbo_stream.append "body" do
+  = render "shared/new_record_modal",
+    controller: "admin--new-instructor-modal",
+    url: admin_instructors_path,
+    model: @instructor,
+    title: "講師の追加" do |form|
+
+    .modal-body
+      #new-instructor-errors
+      .field
+        = form.label :name
+        = form.text_field :name, required: true, autofocus: true
+      .field
+        = form.label :email
+        = form.email_field :email, required: true
+      .field
+        = form.label :password
+        = form.password_field :password
+      .field
+        = form.label :instructional_language
+        = form.select :instructional_language,
+          User.instructional_languages.keys.map { |language| [t("languages.#{language}"), language] }
+
+    .modal-footer.actions
+      %button.btn-primary 講師を追加する

@@ -21,3 +21,9 @@ application.register("disposable-modal", DisposableModalController)
 
 import ReloadLessonsCalendarController from "./reload_lessons_calendar_controller"
 application.register("reload-lessons-calendar", ReloadLessonsCalendarController)
+
+import AdminInstructorsFormController from "./admin/instructors_form_controller"
+application.register("admin--instructors-form", AdminInstructorsFormController)
+
+import AdminNewInstructorModalController from "./admin/new_instructor_modal_controller"
+application.register("admin--new-instructor-modal", AdminNewInstructorModalController)

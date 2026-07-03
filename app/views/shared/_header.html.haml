@@ -1,0 +1,15 @@
+-# locals: (home_path:)
+
+%header.d-flex.flex-wrap.align-items-center.justify-content-end.gap-2.py-2.px-3.sticky-top.bg-body
+  %h1.logo= link_to "Fll Matching", home_path
+
+  = yield
+
+  .ms-auto.text-nowrap
+    %i.bi.bi-person-fill
+    = current_user.name
+
+  .d-flex.flex-wrap.gap-2
+    = yield :header_controls
+    = button_to "ログアウト", destroy_user_session_path,
+      method: :delete, class: "btn-secondary"

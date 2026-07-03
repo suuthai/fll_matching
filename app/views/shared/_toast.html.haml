@@ -1,0 +1,18 @@
+-# locals: (message:, alert: false)
+
+- toast_class, role = alert ? [ "text-bg-warning", "alert" ] : [ "", "status" ]
+
+.toast.fade.show{
+  class: toast_class,
+  role: role,
+  aria_live: "assertive",
+  aria_atomic: "true",
+  data: {
+    controller: "disposable-toast"
+  }
+}
+  .toast-body
+    .d-flex.align-items-start.gap-2
+      %div= message
+      .text-end.ms-auto
+        %button.btn-close{ type: "button", aria_label: "閉じる", data: { bs_dismiss: "toast" } }

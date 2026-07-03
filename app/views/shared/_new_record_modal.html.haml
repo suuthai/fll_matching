@@ -1,0 +1,26 @@
+-# locals: (controller:, model:, url:, title: "")
+
+.modal.fade{
+  data: {
+    controller:,
+    bs_backdrop: "static",
+    bs_keyboard: "false"
+  },
+  tabindex: -1
+}
+
+  .modal-dialog
+    = form_with model:,
+      data: { action: "turbo:submit-start->#{controller}#submitStart" },
+      url:,
+      class: "modal-content" do |form|
+
+      .modal-header
+        .modal-title= title
+        .ms-auto
+          %button.btn-close{
+            type: "button",
+            data: { bs_dismiss: "modal" }
+          }
+
+      = yield form

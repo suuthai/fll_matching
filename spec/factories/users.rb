@@ -5,5 +5,9 @@ FactoryBot.define do
     password { "password123" }
     role { :student }
     tickets_count { 0 }
+
+    trait :admin do
+      role { :admin }
+    end
   end
 end

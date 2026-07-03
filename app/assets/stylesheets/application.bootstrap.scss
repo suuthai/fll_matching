@@ -46,21 +46,18 @@ form.button_to {
     @extend .btn;
     @extend .btn-primary;
   }
-}
 
-header {
-  @extend .d-flex;
-  @extend .flex-wrap;
-  @extend .align-items-center;
-  @extend .justify-content-end;
-  @extend .gap-2;
-  @extend .py-2;
-  @extend .px-3;
-}
+  button.btn-primary {
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .gap-1;
 
-.header-user {
-  @extend .ms-auto;
-  @extend .text-nowrap;
+    .submitting &[disabled]::before {
+      @extend .spinner-border;
+      @extend .spinner-border-sm;
+      content: "\00A0";
+    }
+  }
 }
 
 .header-controls {
@@ -101,12 +98,4 @@ header {
 
 #lessons-slots {
   flex-basis: 400px;
-}
-
-button .spinner-border {
-  display: none;
-}
-
-button[disabled] .spinner-border {
-  display: inline-block;
 }
