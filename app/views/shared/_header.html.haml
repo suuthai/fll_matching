@@ -11,5 +11,8 @@
 
   .d-flex.flex-wrap.gap-2
     = yield :header_controls
+
+    -# data: { turbo: false } は画面遷移時にlayoutが切り替わらない不具合への対処のため
     = button_to "ログアウト", destroy_user_session_path,
-      method: :delete, class: "btn-secondary"
+      method: :delete, class: "btn-secondary", data: { turbo: false }
+      

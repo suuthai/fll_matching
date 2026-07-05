@@ -1,7 +1,8 @@
 = content_for :view_title do
   ログイン
 
-= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+-# data: { turbo: false } は画面遷移時にlayoutが切り替わらない不具合への対処のため
+= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f|
   .field
     = f.label :email
     = f.email_field :email, autofocus: true, autocomplete: "email"
