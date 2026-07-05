@@ -42,7 +42,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "home#index"
-    resources :instructors, only: [:index, :new, :create, :destroy] do
+    resources :instructors, only: [ :index, :new, :create, :edit, :update, :destroy ] do
       member do
         get :confirm_destruction
       end

@@ -21,6 +21,26 @@ class Admin::InstructorsController < Admin::BaseController
     render status: @instructor.persisted? ? :ok : :unprocessable_content
   end
 
+  def edit
+    @instructor = User.find(params[:id])
+  end
+
+  def update
+    @instructor = User.find(params[:id])
+
+    attributes = params.require(:user).permit(
+      :name,
+      :email,
+      :instructional_language,
+      :password
+    )
+    attributes.delete(:password) if attributes[:password].blank?
+
+    @instructor.update(attributes)
+
+    render status: @instructor.errors.empty? ? :ok : :unprocessable_content
+  end
+
   def confirm_destruction
     @instructor = User.find(params[:id])
     @booked_lessons = @instructor.lessons_as_instructor.where("starts_at >= ?", 50.minutes.ago)

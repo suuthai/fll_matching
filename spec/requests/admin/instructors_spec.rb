@@ -124,6 +124,131 @@ RSpec.describe "Admin::Instructors", type: :request do
     end
   end
 
+  describe "GET /admin/instructors/:id/edit" do
+    context "未ログインの場合" do
+      before { get edit_admin_instructor_path(instructor), headers: { "Accept" => "text/vnd.turbo-stream.html" } }
+
+      it "サインインページにリダイレクトする" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "管理者以外がログインしている場合" do
+      before do
+        sign_in student
+        get edit_admin_instructor_path(instructor), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      end
+
+      it "サインインページにリダイレクトする" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context "管理者がログインしている場合" do
+      before do
+        sign_in admin
+        get edit_admin_instructor_path(instructor), headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      end
+
+      it "200を返す" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "編集フォームに現在の講師名を表示する" do
+        expect(response.body).to include(instructor.name)
+      end
+    end
+  end
+
+  describe "PATCH /admin/instructors/:id" do
+    let(:valid_params) do
+      { user: { name: "更新後の名前", email: instructor.email, instructional_language: :thai } }
+    end
+
+    let(:invalid_params) do
+      { user: { name: "", email: instructor.email, instructional_language: :thai } }
+    end
+
+    context "未ログインの場合" do
+      before { patch admin_instructor_path(instructor), params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" } }
+
+      it "サインインページにリダイレクトする" do
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it "講師情報を更新しない" do
+        expect(instructor.reload.name).not_to eq("更新後の名前")
+      end
+    end
+
+    context "管理者以外がログインしている場合" do
+      before { sign_in student }
+
+      it "サインインページにリダイレクトする" do
+        patch admin_instructor_path(instructor), params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
+      it "講師情報を更新しない" do
+        patch admin_instructor_path(instructor), params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+        expect(instructor.reload.name).not_to eq("更新後の名前")
+      end
+    end
+
+    context "管理者がログインしている場合" do
+      before { sign_in admin }
+
+      context "有効なパラメータの場合" do
+        it "講師情報を更新する" do
+          patch admin_instructor_path(instructor), params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(instructor.reload.name).to eq("更新後の名前")
+        end
+
+        it "200を返す" do
+          patch admin_instructor_path(instructor), params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "無効なパラメータの場合" do
+        it "講師情報を更新しない" do
+          patch admin_instructor_path(instructor), params: invalid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(instructor.reload.name).not_to eq("")
+        end
+
+        it "422を返す" do
+          patch admin_instructor_path(instructor), params: invalid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+      end
+
+      context "パスワードを空欄で送信した場合" do
+        let(:params_with_blank_password) do
+          { user: { name: "更新後の名前", email: instructor.email, instructional_language: :thai, password: "" } }
+        end
+
+        it "既存のパスワードを維持する" do
+          encrypted_password_was = instructor.encrypted_password
+          patch admin_instructor_path(instructor), params: params_with_blank_password,
+            headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(instructor.reload.encrypted_password).to eq(encrypted_password_was)
+        end
+
+        it "パスワード以外の属性は更新する" do
+          patch admin_instructor_path(instructor), params: params_with_blank_password,
+            headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(instructor.reload.name).to eq("更新後の名前")
+        end
+
+        it "200を返す" do
+          patch admin_instructor_path(instructor), params: params_with_blank_password,
+            headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+  end
+
   describe "GET /admin/instructors/:id/confirm_destruction" do
     context "未ログインの場合" do
       before do

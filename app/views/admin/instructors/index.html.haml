@@ -22,6 +22,9 @@
                 %td= instructor.email
                 %td= t "languages.#{instructor.instructional_language}"
                 %td.py-0.align-middle
+                  = link_to "参照と更新", edit_admin_instructor_path(instructor),
+                    class: "btn btn-primary btn-sm",
+                    data: { turbo_stream: true }
                   %button{
                     class: "btn-danger btn-sm",
                     formaction: confirm_destruction_admin_instructor_path(instructor.id),
