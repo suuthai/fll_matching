@@ -8,13 +8,12 @@ Rails.application.routes.draw do
 
   scope ":language",
     constraints: { language: Regexp.new(User.instructional_languages.keys.join("|")) } do
-
     get "/", to: "home#index", as: :language_root
     resources :checkouts, only: [ :create ]
     get "checkouts/success", to: "checkouts#success", as: :checkout_success
     get "checkouts/cancel", to: "checkouts#cancel", as: :checkout_cancel
 
-    resources :lessons, only: [:new, :create] do
+    resources :lessons, only: [ :new, :create ] do
       collection do
         get "calendar"
         get "slots"

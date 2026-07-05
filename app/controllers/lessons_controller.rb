@@ -53,7 +53,7 @@ class LessonsController < ApplicationController
     @starts_at = Time.parse params[:starts_at]
 
     @instructors, initially_selected_instructor_id = if instructor_id
-      [ [User.find(instructor_id)], instructor_id ]
+      [ [ User.find(instructor_id) ], instructor_id ]
     else
       unavailable_instructor_ids = Lesson.select(:instructor_id)
         .where(starts_at: @starts_at)
