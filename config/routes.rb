@@ -42,7 +42,11 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "home#index"
-    resources :instructors, only: [:index, :new, :create]
+    resources :instructors, only: [:index, :new, :create, :destroy] do
+      member do
+        get :confirm_destruction
+      end
+    end
   end
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)

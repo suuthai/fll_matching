@@ -1,10 +1,10 @@
-import NewRecordModalController from "./new_record_modal_controller"
+import OperateRecordModalController from "./operate_record_modal_controller"
 import LatchController from "./latch_controller"
 import ReloadLessonsCalendarController from "./reload_lessons_calendar_controller"
 import { Modal } from "bootstrap"
 
 // Connects to data-controller="new-lesson-modal"
-export default class extends NewRecordModalController {
+export default class extends OperateRecordModalController {
   async submitStart() {
     if (await super.submitStart()) {
       ReloadLessonsCalendarController.reload();

@@ -10,6 +10,6 @@
     .modal-content
       .modal-body.alert.alert-warning.m-0.d-flex.align-items-start.gap-1{ role: "alert" }
         %div
-          = t "lessons.create.#{error}"
+          = yield
         .ms-auto
           %button.btn-close{ type: "button", data: { bs_dismiss: "modal" } }

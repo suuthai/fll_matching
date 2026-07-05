@@ -8,10 +8,7 @@
 
     -# この判定の後にレコードをループするので、ここでは .present? を使うのが正しいはず
     - if @instructors.present?
-      = form_with model: User.new,
-        data: { controller: "admin--instructors-form", action: "turbo:submit-start->admin--instructors-form#submitStart" },
-        url: "" do |form|
-
+      = form_with model: User.new, url: "", data: { turbo_stream: true } do |form|
         %table.table
           %thead
             %tr
@@ -24,4 +21,9 @@
                 %td= instructor.name
                 %td= instructor.email
                 %td= t "languages.#{instructor.instructional_language}"
-                %td (操作)
+                %td.py-0.align-middle
+                  %button{
+                    class: "btn-danger btn-sm",
+                    formaction: confirm_destruction_admin_instructor_path(instructor.id),
+                    formmethod: :get
+                  } 削除

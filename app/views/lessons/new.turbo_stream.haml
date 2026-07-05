@@ -3,6 +3,7 @@
   = turbo_stream.append "body" do
     = render "shared/new_record_modal",
       controller: "new-lesson-modal",
+      records_frame: "booked-lessons",
       url: lessons_path(@language),
       model: @lesson,
       title: "レッスン予約" do |form|
@@ -32,4 +33,5 @@
 
   = turbo_stream.append "body" do
     %div{ data: { controller: "reload-lessons-calendar" } }
-    = render "error", error: @error
+    = render "shared/error_modal" do
+      = t "lessons.create.#{@error}"

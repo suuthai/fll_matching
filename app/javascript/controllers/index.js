@@ -10,6 +10,9 @@ application.register("home", HomeController)
 import DisposableToastController from "./disposable_toast_controller"
 application.register("disposable-toast", DisposableToastController)
 
+import OperateRecordModalController from "./operate_record_modal_controller"
+application.register("operate-record-modal", OperateRecordModalController)
+
 import NewLessonModalController from "./new_lesson_modal_controller"
 application.register("new-lesson-modal", NewLessonModalController)
 
@@ -21,9 +24,3 @@ application.register("disposable-modal", DisposableModalController)
 
 import ReloadLessonsCalendarController from "./reload_lessons_calendar_controller"
 application.register("reload-lessons-calendar", ReloadLessonsCalendarController)
-
-import AdminInstructorsFormController from "./admin/instructors_form_controller"
-application.register("admin--instructors-form", AdminInstructorsFormController)
-
-import AdminNewInstructorModalController from "./admin/new_instructor_modal_controller"
-application.register("admin--new-instructor-modal", AdminNewInstructorModalController)

@@ -1,0 +1,26 @@
+= turbo_stream.append "body" do
+  .modal.fade{
+    data: {
+      controller: "operate-record-modal",
+      records_frame: "instructors",
+      bs_backdrop: "static",
+      bs_keyboard: "false"
+    },
+    tabindex: -1
+  }
+    .modal-dialog
+      .modal-content
+        = form_with model: @instructor,
+          url: admin_instructor_path(@instructor.id),
+          data: { action: "turbo:submit-start->operate-record-modal#submitStart" },
+          method: :delete do |form|
+
+          .modal-body
+            - if @booked_lessons.exists?
+              .alert.alert-danger{ role: "alert" }
+                この講師で予約されたレッスンが残っています!
+            %div 本当に講師 '#{@instructor.name}' を削除しますか?
+          .modal-footer.actions
+            = form.submit "削除する", class: "btn btn-danger"
+            %button.btn-secondary{ type: "button", data: { bs_dismiss: "modal" } }
+              削除しない

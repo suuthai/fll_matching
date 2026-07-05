@@ -3,7 +3,7 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
 
-button, input[type="submit"] {
+button {
   @extend .btn;
 }
 
@@ -41,11 +41,6 @@ form.button_to {
 .actions {
   @extend .text-end;
   @extend .mt-2;
-
-  input[type="submit"] {
-    @extend .btn;
-    @extend .btn-primary;
-  }
 
   button.btn-primary {
     @extend .d-flex;

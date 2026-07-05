@@ -1,5 +1,5 @@
 = turbo_stream.append "body" do
-  %div{ data: { controller: "latch", latch_name: "create-record" } }
+  %div{ data: { controller: "latch", latch_name: "operate-record" } }
 
 - if !@error.present?
 
@@ -12,4 +12,6 @@
 
 - else
 
-  = turbo_stream.append "body", partial: "error", locals: { error: @error }
+  = turbo_stream.append "body" do
+    = render "shared/error_modal" do
+      = t "lessons.create.#{@error}"

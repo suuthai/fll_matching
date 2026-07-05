@@ -1,6 +1,6 @@
 = turbo_stream.append "body" do
   = render "shared/new_record_modal",
-    controller: "admin--new-instructor-modal",
+    records_frame: "instructors",
     url: admin_instructors_path,
     model: @instructor,
     title: "講師の追加" do |form|

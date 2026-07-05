@@ -3,6 +3,7 @@ import LatchController from "./latch_controller"
 import ReloadLessonsCalendarController from "./reload_lessons_calendar_controller"
 import { Modal } from "bootstrap"
 
+// Connects to data-controller="operate-record-modal"
 export default class extends DisposableModalController {
   connect() {
     super.connect();
@@ -16,8 +17,9 @@ export default class extends DisposableModalController {
     this.element.classList.add("submitting");
     this.element.querySelectorAll("button").forEach((button) => button.disabled = true);
     
-    if ((await LatchController.unlatching("create-record")) != "error") {
+    if ((await LatchController.unlatching("operate-record")) != "error") {
       this.hideModal();
+      document.getElementById(this.element.dataset.recordsFrame).reload();
       return true;
     } else {
       this.element.classList.remove("submitting");

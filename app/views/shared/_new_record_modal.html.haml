@@ -1,8 +1,9 @@
--# locals: (controller:, model:, url:, title: "")
+-# locals: (controller: "operate-record-modal", records_frame:, model:, url:, title: "")
 
 .modal.fade{
   data: {
     controller:,
+    records_frame:,
     bs_backdrop: "static",
     bs_keyboard: "false"
   },
@@ -12,8 +13,8 @@
   .modal-dialog
     = form_with model:,
       data: { action: "turbo:submit-start->#{controller}#submitStart" },
-      url:,
-      class: "modal-content" do |form|
+      class: "modal-content",
+      url: do |form|
 
       .modal-header
         .modal-title= title

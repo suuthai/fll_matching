@@ -20,4 +20,13 @@ class Admin::InstructorsController < Admin::BaseController
 
     render status: @instructor.persisted? ? :ok : :unprocessable_content
   end
+
+  def confirm_destruction
+    @instructor = User.find(params[:id])
+    @booked_lessons = @instructor.lessons_as_instructor.where("starts_at >= ?", 50.minutes.ago)
+  end
+
+  def destroy
+    @instructor = User.find(params[:id]).destroy
+  end
 end
