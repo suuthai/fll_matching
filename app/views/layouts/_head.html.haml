@@ -1,3 +1,5 @@
+-# locals: (stylesheet: "application")
+
 %head
   %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
   %title= content_for(:title) || "Fll Matching"
@@ -11,5 +13,5 @@
   %link{:href => "/icon.png", :rel => "icon", :type => "image/png"}/
   %link{:href => "/icon.svg", :rel => "icon", :type => "image/svg+xml"}/
   %link{:href => "/icon.png", :rel => "apple-touch-icon"}/
-  = stylesheet_link_tag :app, "data-turbo-track": "reload"
+  = stylesheet_link_tag stylesheet, "data-turbo-track": "reload"
   = javascript_include_tag "application", "data-turbo-track": "reload", type: "module"

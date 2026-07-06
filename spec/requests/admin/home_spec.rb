@@ -33,6 +33,10 @@ RSpec.describe "Admin::Home", type: :request do
       it "200を返す" do
         expect(response).to have_http_status(:ok)
       end
+
+      it "通常のスタイルシートを読み込む(講師専用テーマではない)" do
+        expect(response.body).not_to include("application-instructors")
+      end
     end
   end
 

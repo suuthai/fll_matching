@@ -1,6 +1,6 @@
--# locals: (home_path:)
+-# locals: (home_path:, header_class: "bg-body")
 
-%header.d-flex.flex-wrap.align-items-center.justify-content-end.gap-2.py-2.px-3.sticky-top.bg-body
+%header.d-flex.flex-wrap.align-items-center.justify-content-end.gap-2.py-2.px-3.sticky-top{ class: header_class }
   %h1.logo= link_to "Fll Matching", home_path
 
   = yield

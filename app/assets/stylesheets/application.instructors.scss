@@ -1,0 +1,10 @@
+@use 'sass:color';
+
+@import 'bootstrap/scss/functions';
+
+$primary: color.adjust(blueviolet, $hue: -15deg);
+$secondary: shade-color($primary, 25%);
+
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
+@import 'common';

@@ -1,0 +1,99 @@
+@use 'sass:map';
+
+button {
+  @extend .btn;
+}
+
+// text-bg-* を使うヘッダー内のリンクは、$link-color(=$primary)ではなく
+// ヘッダー自身の文字色(白などのコントラスト色)を継承させて視認性を保つ
+header[class*="text-bg-"] a {
+  color: inherit;
+}
+
+turbo-frame,
+form.button_to {
+  display: contents;
+}
+
+.field {
+  + .field {
+    @extend .mt-2;
+  }
+
+  label:first-child {
+    @extend .form-label;
+  }
+
+  input[type="text"], input[type="password"], input[type="email"] {
+    @extend .form-control;
+  }
+
+  input[type="checkbox"] {
+    @extend .form-check-input;
+  }
+
+  input[type="checkbox"] + label {
+    @extend .form-check-label;
+  }
+
+  select {
+    @extend .form-select;
+  }
+}
+
+.actions {
+  @extend .text-end;
+  @extend .mt-2;
+
+  button.btn-primary {
+    @extend .d-flex;
+    @extend .align-items-center;
+    @extend .gap-1;
+
+    .submitting &[disabled]::before {
+      @extend .spinner-border;
+      @extend .spinner-border-sm;
+      content: "\00A0";
+    }
+  }
+}
+
+.header-controls {
+  @extend .d-flex;
+  @extend .flex-wrap;
+  @extend .gap-2;
+}
+
+.buy-ticket-buttons {
+  @extend .d-flex;
+  @extend .flex-column;
+  @extend .gap-2;
+  @extend .mt-2;
+}
+
+.buy-ticket-button {
+  @extend .btn-primary;
+  @extend .d-flex;
+  @extend .gap-2;
+  @extend .text-start;
+}
+
+#lessons-calendar {
+  label {
+    width: 60px;
+  }
+
+  .day.next-month > label,
+  .day.prev-month > label {
+    visibility: hidden;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: map.get($spacers, 1);
+  }
+}
+
+#lessons-slots {
+  flex-basis: 400px;
+}
