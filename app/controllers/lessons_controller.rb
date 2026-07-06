@@ -59,7 +59,7 @@ class LessonsController < ApplicationController
         .where(starts_at: @starts_at)
 
       available_instructors = User
-        .where(instructional_language: language)
+        .where("can_instruct_#{language}": true)
         .where.not(id: unavailable_instructor_ids)
 
       return render_error :fully_booked if available_instructors.size <= 0
@@ -85,7 +85,7 @@ class LessonsController < ApplicationController
         })
 
         current_user.decrement!(:tickets_count)
-        ProcessLessonBookingJob.perform_later(lesson.id)
+        ProcessLessonBookingJob.perform_later(lesson.id, language)
       end
     rescue ActiveRecord::RecordNotUnique
       render_error :fully_booked
@@ -98,7 +98,7 @@ class LessonsController < ApplicationController
   def index
     @lessons = Lesson.joins(:instructor)
       .select("lessons.starts_at, lessons.zoom_url, users.name AS instructor_name")
-      .where(student_id:, users: { instructional_language: language })
+      .where(student_id:, users: { "can_instruct_#{language}": true })
       .where("starts_at >= ?", 1.hour.ago)
       .order(starts_at: :asc)
       .map { |lesson|
@@ -129,7 +129,7 @@ class LessonsController < ApplicationController
   end
 
   def instructors_count
-    @instructors_count ||= User.where(instructional_language: language).count
+    @instructors_count ||= User.where("can_instruct_#{language}": true).count
   end
 
   def slot_hours
@@ -151,7 +151,7 @@ class LessonsController < ApplicationController
         records.where("instructor_id = ? OR student_id = ?", instructor_id, current_user.id),
         lessons_count_coefficient
       ] : [
-        records.where(users: { instructional_language: language }),
+        records.where(users: { "can_instruct_#{language}": true }),
         instructors_count * lessons_count_coefficient
       ]
 

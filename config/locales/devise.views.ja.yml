@@ -8,7 +8,7 @@ ja:
         password_confirmation: "確認用パスワード"
         remember_me: "ログインを記憶"
         name: "ユーザー名"
-        instructional_language: "言語"
+        instructable_languages: "言語"
     models:
       user: "ユーザ"
   devise:

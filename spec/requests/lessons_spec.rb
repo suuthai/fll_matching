@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Lessons", type: :request do
   let(:student)    { create(:user, role: :student, tickets_count: 1) }
-  let(:instructor) { create(:user, role: :instructor, instructional_language: :thai) }
+  let(:instructor) { create(:user, role: :instructor, can_instruct_thai: true) }
   let(:time_zone)  { "Asia/Tokyo" }
   let(:starts_at)  { Time.current.in_time_zone(time_zone).beginning_of_hour + 1.day }
 
@@ -189,7 +189,7 @@ RSpec.describe "Lessons", type: :request do
       end
 
       context "同じ日時に別の講師とのレッスンをすでに予約している場合" do
-        let(:instructor2) { create(:user, role: :instructor, instructional_language: :thai) }
+        let(:instructor2) { create(:user, role: :instructor, can_instruct_thai: true) }
         before { create(:lesson, student:, instructor: instructor2, starts_at:) }
 
         let(:lesson_params) { { lesson: { starts_at: starts_at.iso8601, instructor_id: instructor.id } } }

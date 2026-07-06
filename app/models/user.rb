@@ -9,17 +9,15 @@ class User < ApplicationRecord
 
   enum :role, { student: 0, instructor: 1, admin: 2 }
 
-  enum :instructional_language, {
-    thai: 0,
-    vietnamese: 1,
-    lao: 2,
-    khmer: 3,
-    burmese: 4
-  }
+  LANGUAGES = %i[thai vietnamese lao khmer burmese].freeze
 
   validates :name, presence: true
 
   def recent_instructor
     lessons_as_student.order(created_at: :desc).first&.instructor
+  end
+
+  def instructable_languages
+    LANGUAGES.select { |language| self["can_instruct_#{language}"] }
   end
 end

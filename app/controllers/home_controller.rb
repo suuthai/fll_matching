@@ -3,7 +3,7 @@ class HomeController < ApplicationController
 
   def index
     @language = language
-    @instructors = User.where(instructional_language: language)
+    @instructors = User.where("can_instruct_#{language}": true)
     @initially_selected_instructor_id = current_user.recent_instructor&.id
   end
 end

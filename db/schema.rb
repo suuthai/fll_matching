@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_02_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_06_023946) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,10 +28,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_120000) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.boolean "can_instruct_burmese", default: false, null: false
+    t.boolean "can_instruct_khmer", default: false, null: false
+    t.boolean "can_instruct_lao", default: false, null: false
+    t.boolean "can_instruct_thai", default: false, null: false
+    t.boolean "can_instruct_vietnamese", default: false, null: false
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.integer "instructional_language"
     t.string "name"
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"

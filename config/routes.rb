@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   post "stripe/webhook", to: "checkouts#webhook"
 
   scope ":language",
-    constraints: { language: Regexp.new(User.instructional_languages.keys.join("|")) } do
+    constraints: { language: Regexp.new(User::LANGUAGES.join("|")) } do
     get "/", to: "home#index", as: :language_root
     resources :checkouts, only: [ :create ]
     get "checkouts/success", to: "checkouts#success", as: :checkout_success

@@ -3,9 +3,10 @@ require 'rails_helper'
 RSpec.describe LessonMailer, type: :mailer do
   let(:zoom_url) { "https://zoom.us/j/123456789?pwd=abcdef" }
   let(:lesson) { create(:lesson, zoom_url:) }
+  let(:language) { "thai" }
 
   describe "#student_confirmation" do
-    let(:mail) { described_class.student_confirmation(lesson) }
+    let(:mail) { described_class.student_confirmation(lesson, language) }
 
     it "生徒のメールアドレスに送信する" do
       expect(mail.to).to contain_exactly(lesson.student.email)
@@ -25,7 +26,7 @@ RSpec.describe LessonMailer, type: :mailer do
   end
 
   describe "#instructor_notification" do
-    let(:mail) { described_class.instructor_notification(lesson) }
+    let(:mail) { described_class.instructor_notification(lesson, language) }
 
     it "講師のメールアドレスに送信する" do
       expect(mail.to).to contain_exactly(lesson.instructor.email)

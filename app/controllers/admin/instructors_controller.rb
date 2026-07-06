@@ -13,8 +13,8 @@ class Admin::InstructorsController < Admin::BaseController
       **params.require(:user).permit(
         :name,
         :email,
-        :instructional_language,
-        :password
+        :password,
+        *User::LANGUAGES.map { |language| :"can_instruct_#{language}" }
       )
     })
 
@@ -31,8 +31,8 @@ class Admin::InstructorsController < Admin::BaseController
     attributes = params.require(:user).permit(
       :name,
       :email,
-      :instructional_language,
-      :password
+      :password,
+      *User::LANGUAGES.map { |language| :"can_instruct_#{language}" }
     )
     attributes.delete(:password) if attributes[:password].blank?
 

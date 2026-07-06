@@ -6,7 +6,7 @@
   %tbody
     %tr
       %th 言語
-      %td= t "languages.#{@lesson.instructor.instructional_language}"
+      %td= t "languages.#{@language}"
     %tr
       %th 日時
       %td= l @lesson.starts_at.in_time_zone("Asia/Tokyo"), format: :lesson_slot_long

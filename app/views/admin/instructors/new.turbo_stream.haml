@@ -17,9 +17,11 @@
         = form.label :password
         = form.password_field :password
       .field
-        = form.label :instructional_language
-        = form.select :instructional_language,
-          User.instructional_languages.keys.map { |language| [t("languages.#{language}"), language] }
+        %label 指導可能な言語
+        - User::LANGUAGES.each do |language|
+          %div
+            = form.check_box "can_instruct_#{language}"
+            = form.label "can_instruct_#{language}", t("languages.#{language}")
 
     .modal-footer.actions
       %button.btn-primary 講師を追加する

@@ -11,8 +11,8 @@
       = t "languages.#{@language}"
 
     %ul.dropdown-menu
-      - User.instructional_languages.each do |(language)|
-        - if language != @language
+      - User::LANGUAGES.each do |language|
+        - if language.to_s != @language
           %li
             %a.dropdown-item{ href: language_root_path(language:) }
               = t "languages.#{language}"
@@ -21,7 +21,7 @@
     %div
       = turbo_frame_tag "booked-lessons",
         data: { src: student_lessons_path(@language, current_user.id) }
-    
+
     .d-flex.flex-row.flex-wrap.align-items-start.justify-content-center.gap-2
       .d-flex.flex-column.align-items-stretch.justify-content-start.gap-2
         .d-flex.flex-row.gap-2.text-nowrap.align-items-center

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "Admin::Instructors", type: :request do
   let(:admin)       { create(:user, :admin) }
   let(:student)     { create(:user) }
-  let!(:instructor) { create(:user, role: :instructor, instructional_language: :thai) }
+  let!(:instructor) { create(:user, role: :instructor, can_instruct_thai: true, can_instruct_lao: true) }
 
   describe "GET /admin/instructors" do
     context "未ログインの場合" do
@@ -38,6 +38,11 @@ RSpec.describe "Admin::Instructors", type: :request do
       it "講師一覧を表示する" do
         expect(response.body).to include(instructor.name)
       end
+
+      it "指導可能な言語のクラスが付与されたtd要素を表示する" do
+        td = Nokogiri::HTML(response.body).at_css("td.language-thai.language-lao")
+        expect(td).not_to be_nil
+      end
     end
   end
 
@@ -68,7 +73,8 @@ RSpec.describe "Admin::Instructors", type: :request do
         user: {
           name: "新しい講師",
           email: "new_instructor@example.com",
-          instructional_language: :thai,
+          can_instruct_thai: true,
+          can_instruct_lao: true,
           password: "password123"
         }
       }
@@ -79,7 +85,7 @@ RSpec.describe "Admin::Instructors", type: :request do
         user: {
           name: "",
           email: "",
-          instructional_language: :thai,
+          can_instruct_thai: true,
           password: ""
         }
       }
@@ -106,6 +112,12 @@ RSpec.describe "Admin::Instructors", type: :request do
         it "200を返す" do
           post admin_instructors_path, params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
           expect(response).to have_http_status(:ok)
+        end
+
+        it "指定した言語を指導可能として設定する" do
+          post admin_instructors_path, params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          created_instructor = User.instructor.order(:id).last
+          expect(created_instructor.instructable_languages).to contain_exactly(:thai, :lao)
         end
       end
 
@@ -162,11 +174,11 @@ RSpec.describe "Admin::Instructors", type: :request do
 
   describe "PATCH /admin/instructors/:id" do
     let(:valid_params) do
-      { user: { name: "更新後の名前", email: instructor.email, instructional_language: :thai } }
+      { user: { name: "更新後の名前", email: instructor.email, can_instruct_thai: true, can_instruct_lao: false, can_instruct_khmer: true } }
     end
 
     let(:invalid_params) do
-      { user: { name: "", email: instructor.email, instructional_language: :thai } }
+      { user: { name: "", email: instructor.email, can_instruct_thai: true } }
     end
 
     context "未ログインの場合" do
@@ -208,6 +220,11 @@ RSpec.describe "Admin::Instructors", type: :request do
           patch admin_instructor_path(instructor), params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
           expect(response).to have_http_status(:ok)
         end
+
+        it "指定した言語を指導可能として更新する" do
+          patch admin_instructor_path(instructor), params: valid_params, headers: { "Accept" => "text/vnd.turbo-stream.html" }
+          expect(instructor.reload.instructable_languages).to contain_exactly(:thai, :khmer)
+        end
       end
 
       context "無効なパラメータの場合" do
@@ -224,7 +241,7 @@ RSpec.describe "Admin::Instructors", type: :request do
 
       context "パスワードを空欄で送信した場合" do
         let(:params_with_blank_password) do
-          { user: { name: "更新後の名前", email: instructor.email, instructional_language: :thai, password: "" } }
+          { user: { name: "更新後の名前", email: instructor.email, can_instruct_thai: true, password: "" } }
         end
 
         it "既存のパスワードを維持する" do
