@@ -1,5 +1,5 @@
 = turbo_stream.append "body" do
-  = render "shared/new_record_modal",
+  = render "shared/edit_modal",
     records_frame: "instructors",
     url: admin_instructor_path(@instructor),
     model: @instructor,
@@ -16,10 +16,10 @@
       .field
         = form.label :password
         = form.password_field :password, placeholder: "変更する場合のみ入力してください"
-      .field
-        %label 指導可能な言語
+      %fieldset.field
+        %legend.form-label 指導可能な言語
         - User::LANGUAGES.each do |language|
-          %div
+          .form-check.form-check-inline
             = form.check_box "can_instruct_#{language}"
             = form.label "can_instruct_#{language}", t("languages.#{language}")
 

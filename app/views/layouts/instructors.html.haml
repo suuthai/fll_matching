@@ -2,7 +2,7 @@
 %html
   = render "layouts/head", stylesheet: "application-instructors"
   %body#body
-    = render "shared/header", home_path: instructors_root_path, header_class: "text-bg-primary" do
+    = render "shared/header", home_path: instructors_home_path, header_class: "text-bg-primary" do
       %div 講師専用ページ
     %main.container-fluid.pt-2= yield
     = render "shared/toast_container"

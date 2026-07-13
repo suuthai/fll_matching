@@ -49,7 +49,9 @@ Rails.application.routes.draw do
   end
 
   namespace :instructors do
-    root to: "home#index"
+    get "home", to: "home#index", as: :home
+    get "home/edit", to: "home#edit", as: :edit
+    patch "home/update", to: "home#update", as: :update
   end
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)

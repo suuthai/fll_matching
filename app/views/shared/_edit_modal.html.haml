@@ -1,4 +1,4 @@
--# locals: (controller: "operate-record-modal", records_frame:, model:, url:, title: "")
+-# locals: (controller: "edit-modal", records_frame: nil, model:, url:, title: "", multipart: false, dialog_class: nil)
 
 .modal.fade{
   data: {
@@ -10,11 +10,12 @@
   tabindex: -1
 }
 
-  .modal-dialog
+  .modal-dialog{ class: dialog_class }
     = form_with model:,
       data: { action: "turbo:submit-start->#{controller}#submitStart" },
       class: "modal-content",
-      url: do |form|
+      url:,
+      multipart: do |form|
 
       .modal-header
         .modal-title= title

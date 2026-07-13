@@ -24,7 +24,13 @@ form.button_to {
     @extend .form-label;
   }
 
-  input[type="text"], input[type="password"], input[type="email"] {
+  // <legend>はBootstrapのreboot(_reboot.scss)で見出し相当の大きなfont-sizeが
+  // 指定されているため、通常のフォームラベルと同じ標準サイズに戻す
+  legend {
+    font-size: $font-size-base;
+  }
+
+  input[type="text"], input[type="password"], input[type="email"], input[type="file"], textarea {
     @extend .form-control;
   }
 

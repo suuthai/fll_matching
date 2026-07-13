@@ -1,7 +1,7 @@
 - if !@error.present?
 
   = turbo_stream.append "body" do
-    = render "shared/new_record_modal",
+    = render "shared/edit_modal",
       controller: "new-lesson-modal",
       records_frame: "booked-lessons",
       url: lessons_path(@language),

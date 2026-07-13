@@ -1,7 +1,7 @@
 = turbo_stream.append "body" do
   .modal.fade{
     data: {
-      controller: "operate-record-modal",
+      controller: "edit-modal",
       records_frame: "instructors",
       bs_backdrop: "static",
       bs_keyboard: "false"
@@ -12,7 +12,7 @@
       .modal-content
         = form_with model: @instructor,
           url: admin_instructor_path(@instructor.id),
-          data: { action: "turbo:submit-start->operate-record-modal#submitStart" },
+          data: { action: "turbo:submit-start->edit-modal#submitStart" },
           method: :delete do |form|
 
           .modal-body

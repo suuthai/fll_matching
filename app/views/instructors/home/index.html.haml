@@ -1,2 +1,8 @@
-%div
-  ようこそ、#{current_user.name} さん
+= link_to "プロフィールを更新する", instructors_edit_path,
+  class: "btn btn-primary",
+  data: { turbo_stream: true }
+
+= content_for :toasts do
+  - [ [ alert, true ], [ notice, false ] ].each do |(message, alert)|
+    - if message.present?
+      = render "shared/toast", message:, alert:

@@ -2,7 +2,7 @@
   %div{
     data: {
       controller: "latch",
-      latch_name: "operate-record",
+      latch_name: "update",
       latch_value: !@instructor.persisted? && "error"
     }
   }
@@ -15,6 +15,6 @@
 - else
 
   = turbo_stream.replace "new-instructor-errors" do
-    - @instructor.errors.full_messages.each do |message|    
+    - @instructor.errors.full_messages.each do |message|
       .alert.alert-warning{ role: "alert" }
         = message

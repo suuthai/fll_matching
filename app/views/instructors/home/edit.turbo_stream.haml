@@ -1,0 +1,39 @@
+= turbo_stream.append "body" do
+  = render "shared/edit_modal",
+    controller: "instructors--edit-modal",
+    url: instructors_update_path,
+    model: current_user,
+    title: "プロフィールの更新",
+    multipart: true,
+    dialog_class: "modal-lg" do |form|
+
+    .modal-body
+      #edit-profile-errors
+      .row
+        - if current_user.face_photo.attached?
+          .col-md-4
+            %div 現在の顔写真
+            = image_tag current_user.face_photo, class: "rounded my-2 img-fluid", style: "aspect-ratio: 1 / 1; object-fit: cover;"
+        %div{ class: current_user.face_photo.attached? ? "col-md-8" : nil }
+          .field
+            = form.label :face_photo, current_user.face_photo.attached? ? "更新後の顔写真" : "顔写真"
+            = form.file_field :face_photo,
+              accept: "image/png,image/jpeg,image/webp",
+              required: !current_user.face_photo.attached?
+          .field
+            = form.label :name
+            = form.text_field :name, required: true, autofocus: true
+          .field
+            = form.label :profile_text, "プロフィール"
+            = form.text_area :profile_text, rows: 4, required: true
+          %fieldset#instructable-languages.field
+            %legend.form-label 指導可能な言語
+            - User::LANGUAGES.each do |language|
+              .form-check.form-check-inline
+                = form.check_box "can_instruct_#{language}"
+                = form.label "can_instruct_#{language}", t("languages.#{language}")
+            .constraint-message{ hidden: true }
+              最低1つ以上チェックしてください
+
+    .modal-footer.actions
+      %button.btn-primary 更新する
