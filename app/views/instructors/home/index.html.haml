@@ -1,6 +1,6 @@
-= link_to "プロフィールを更新する", instructors_edit_path,
+= link_to "プロフィールとレッスン時間枠を更新する", instructors_edit_path,
   class: "btn btn-primary",
-  data: { turbo_stream: true }
+  data: { turbo_stream: true, controller: "href-with-timezone" }
 
 = content_for :toasts do
   - [ [ alert, true ], [ notice, false ] ].each do |(message, alert)|

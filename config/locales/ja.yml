@@ -9,6 +9,12 @@ ja:
     lao: "ラオ語(ラオス)"
     khmer: "クメール語(カンボジア)"
     burmese: "ミャンマー語"
+  languages_short:
+    thai: "タイ語"
+    vietnamese: "ベトナム語"
+    lao: "ラオ語"
+    khmer: "クメール語"
+    burmese: "ミャンマー語"
   time:
     formats:
       lesson_slot_long: "%Y年%-m月%-d日 %H:00-%H:50"

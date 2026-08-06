@@ -15,11 +15,12 @@
         value = date.iso8601
         id = "lessons-calendar-date-#{value}"
         unavailable = day < @unavailable_before_day
-        disabled = unavailable || booking[:full]
+        full = booking[:full]
+        disabled = unavailable || full
 
         mark = unavailable ? "-" :
           booking[:booked_by_current_user] ? "*" :
-          booking[:full] ? "×" :
+          full ? "×" :
           "〇"
 
       %input.btn-check{

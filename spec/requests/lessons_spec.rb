@@ -5,6 +5,9 @@ RSpec.describe "Lessons", type: :request do
   let(:instructor) { create(:user, role: :instructor, can_instruct_thai: true) }
   let(:time_zone)  { "Asia/Tokyo" }
   let(:starts_at)  { Time.current.in_time_zone(time_zone).beginning_of_hour + 1.day }
+  let(:lesson_slot) {
+    create(:lesson_slot, instructor:, language: :thai, hour: starts_at.in_time_zone(Time.zone).hour)
+  }
 
   shared_examples "認証が必要" do
     it "未ログインの場合はサインインページにリダイレクトする" do
@@ -41,6 +44,26 @@ RSpec.describe "Lessons", type: :request do
         get slots_lessons_path(language: :thai), params: { date: starts_at.iso8601, time_zone: }
         expect(response).to have_http_status(:ok)
       end
+
+      context "LessonSlotの設定状況によって予約可否が変わる" do
+        let(:available_time) { starts_at.change(hour: 10) }
+        let(:unavailable_time) { starts_at.change(hour: 11) }
+
+        before do
+          create(:lesson_slot, instructor:, language: :thai, hour: available_time.in_time_zone(Time.zone).hour)
+          get slots_lessons_path(language: :thai), params: { date: starts_at.iso8601, time_zone: }
+        end
+
+        it "LessonSlotが設定されている時間帯は予約可能として表示する" do
+          button = Nokogiri::HTML(response.body).at_css("button[value='#{available_time.iso8601}']")
+          expect(button["disabled"]).to be_nil
+        end
+
+        it "LessonSlotが設定されていない時間帯は予約不可として表示する" do
+          button = Nokogiri::HTML(response.body).at_css("button[value='#{unavailable_time.iso8601}']")
+          expect(button["disabled"]).to eq("disabled")
+        end
+      end
     end
   end
 
@@ -51,14 +74,24 @@ RSpec.describe "Lessons", type: :request do
     end
 
     context "ログイン済みの場合" do
-      before do
-        sign_in student
-        instructor
+      before { sign_in student }
+
+      context "LessonSlotが設定されている講師がいる場合" do
+        before { lesson_slot }
+
+        it "200を返す" do
+          get new_lesson_path(language: :thai), params: { starts_at: starts_at.iso8601 }, as: :turbo_stream
+          expect(response).to have_http_status(:ok)
+        end
       end
 
-      it "200を返す" do
-        get new_lesson_path(language: :thai), params: { starts_at: starts_at.iso8601 }, as: :turbo_stream
-        expect(response).to have_http_status(:ok)
+      context "LessonSlotが設定されている講師がいない場合" do
+        before { instructor }
+
+        it "422を返す" do
+          get new_lesson_path(language: :thai), params: { starts_at: starts_at.iso8601 }, as: :turbo_stream
+          expect(response).to have_http_status(:unprocessable_content)
+        end
       end
     end
   end

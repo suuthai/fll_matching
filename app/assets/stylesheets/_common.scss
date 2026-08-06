@@ -20,7 +20,7 @@ form.button_to {
     @extend .mt-2;
   }
 
-  label:first-child {
+  label:first-child, legend {
     @extend .form-label;
   }
 

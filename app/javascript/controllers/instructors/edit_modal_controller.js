@@ -6,15 +6,20 @@ export default class extends EditModalController {
   connect() {
     super.connect();
 
-    const instructableLanguagesFieldSet = document.getElementById("instructable-languages"),
-      checkboxes = [ ...instructableLanguagesFieldSet.querySelectorAll("input[type='checkbox']") ],
-      validateCheckboxes = () =>
-        checkboxes[0].setCustomValidity(checkboxes.every((checkbox) => !checkbox.checked)
-          ? instructableLanguagesFieldSet.querySelector(".constraint-message").textContent
-          : "");
+    const validateAllCheckboxes = [ "instructable-languages", "lesson-slots" ].reduce((validatePrevious, fieldSetId) => {
+      const fieldSet = document.getElementById(fieldSetId),
+        checkboxes = [ ...fieldSet.querySelectorAll("input[type='checkbox']") ],
+        validateThis = () => {
+          checkboxes[0].setCustomValidity(checkboxes.every((checkbox) => !checkbox.checked)
+            ? fieldSet.querySelector(".constraint-message").textContent
+            : "");
+        };
 
-    instructableLanguagesFieldSet.addEventListener("change", validateCheckboxes);
-    validateCheckboxes();
+      fieldSet.addEventListener("change", validateThis);
+      return () => validatePrevious(), validateThis();
+    }, () => {});
+
+    validateAllCheckboxes();
   }
 
 }

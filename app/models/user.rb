@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   has_many :lessons_as_student, class_name: "Lesson", foreign_key: :student_id
   has_many :lessons_as_instructor, class_name: "Lesson", foreign_key: :instructor_id, dependent: :destroy
+  has_many :lesson_slots, foreign_key: :instructor_id, dependent: :destroy
+  accepts_nested_attributes_for :lesson_slots, allow_destroy: true
 
   has_one_attached :face_photo
 

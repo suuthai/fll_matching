@@ -4,6 +4,8 @@ RSpec.describe "Home", type: :request do
   let(:student)              { create(:user) }
   let(:thai_instructor)      { create(:user, role: :instructor, can_instruct_thai: true) }
   let(:lao_instructor)       { create(:user, role: :instructor, can_instruct_lao: true) }
+  let(:thai_lesson_slot)     { create(:lesson_slot, instructor: thai_instructor, language: :thai, hour: 10) }
+  let(:lao_lesson_slot)      { create(:lesson_slot, instructor: lao_instructor, language: :lao, hour: 10) }
 
   describe "GET /:language" do
     context "未ログインの場合" do
@@ -16,8 +18,8 @@ RSpec.describe "Home", type: :request do
 
     context "ログイン済みの場合" do
       before do
-        thai_instructor
-        lao_instructor
+        thai_lesson_slot
+        lao_lesson_slot
         sign_in student
       end
 

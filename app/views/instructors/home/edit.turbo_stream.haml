@@ -7,6 +7,8 @@
     multipart: true,
     dialog_class: "modal-lg" do |form|
 
+    = form.hidden_field :time_zone, name: :time_zone, id: :time_zone, value: time_zone
+
     .modal-body
       #edit-profile-errors
       .row
@@ -26,12 +28,39 @@
           .field
             = form.label :profile_text, "プロフィール"
             = form.text_area :profile_text, rows: 4, required: true
-          %fieldset#instructable-languages.field
-            %legend.form-label 指導可能な言語
+      .row
+        %div
+          %fieldset#instructable-languages.field.mt-2
+            %legend 指導可能な言語
             - User::LANGUAGES.each do |language|
               .form-check.form-check-inline
                 = form.check_box "can_instruct_#{language}"
                 = form.label "can_instruct_#{language}", t("languages.#{language}")
+            .constraint-message{ hidden: true }
+              最低1つ以上チェックしてください
+          %fieldset#lesson-slots.field
+            %legend レッスン時間枠
+            %table.table{ style: "table-layout: fixed;" }
+              %thead
+                %tr
+                  %th
+                  - User::LANGUAGES.each do |language|
+                    %th.text-center= t("languages_short.#{language}")
+              %tbody
+                - time = Time.current.in_time_zone(time_zone)
+                - slot_hours.each do |hour|
+                  - lesson_slots_by_language = @lesson_slots_by_language_and_hour[hour] || {}
+                  %tr
+                    %th= l time.change(hour:), format: :lesson_slot_short
+                    - User::LANGUAGES.each do |language|
+                      - slot = lesson_slots_by_language[language.to_s] || current_user.lesson_slots.build(hour:, language:)
+                      = form.fields_for :lesson_slots, slot do |slot_form|
+                        = slot_form.hidden_field :id
+                        = slot_form.hidden_field :hour
+                        = slot_form.hidden_field :language, value: slot.language
+                        %td.p-0.text-center
+                          %label.d-block.m-0.p-2{ style: "cursor: pointer;" }
+                            = slot_form.check_box :_destroy, { checked: slot.persisted? }, "0", "1"
             .constraint-message{ hidden: true }
               最低1つ以上チェックしてください
 

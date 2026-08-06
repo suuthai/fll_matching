@@ -4,8 +4,8 @@
 
 import { application } from "./application"
 
-import HomeController from "./home_controller"
-application.register("home", HomeController)
+import DisposableModalController from "./disposable_modal_controller"
+application.register("disposable-modal", DisposableModalController)
 
 import DisposableToastController from "./disposable_toast_controller"
 application.register("disposable-toast", DisposableToastController)
@@ -13,17 +13,20 @@ application.register("disposable-toast", DisposableToastController)
 import EditModalController from "./edit_modal_controller"
 application.register("edit-modal", EditModalController)
 
-import NewLessonModalController from "./new_lesson_modal_controller"
-application.register("new-lesson-modal", NewLessonModalController)
+import HomeController from "./home_controller"
+application.register("home", HomeController)
+
+import HrefWithTimezoneController from "./href_with_timezone_controller"
+application.register("href-with-timezone", HrefWithTimezoneController)
+
+import Instructors__EditModalController from "./instructors/edit_modal_controller"
+application.register("instructors--edit-modal", Instructors__EditModalController)
 
 import LatchController from "./latch_controller"
 application.register("latch", LatchController)
 
-import DisposableModalController from "./disposable_modal_controller"
-application.register("disposable-modal", DisposableModalController)
+import NewLessonModalController from "./new_lesson_modal_controller"
+application.register("new-lesson-modal", NewLessonModalController)
 
 import ReloadLessonsCalendarController from "./reload_lessons_calendar_controller"
 application.register("reload-lessons-calendar", ReloadLessonsCalendarController)
-
-import InstructorsEditModalController from "./instructors/edit_modal_controller"
-application.register("instructors--edit-modal", InstructorsEditModalController)
