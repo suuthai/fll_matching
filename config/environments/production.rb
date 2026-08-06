@@ -57,7 +57,8 @@ Rails.application.configure do
   # config.action_mailer.raise_delivery_errors = false
 
   # Set host to be used by links generated in mailer templates.
-  config.action_mailer.default_url_options = { host: "example.com" }
+  # Render sets RENDER_EXTERNAL_HOSTNAME automatically (reflects the custom domain if one is configured).
+  config.action_mailer.default_url_options = { host: ENV.fetch("RENDER_EXTERNAL_HOSTNAME", "example.com") }
 
   # Preview outgoing emails in the browser at /letter_opener instead of sending them for real.
   config.action_mailer.delivery_method = :letter_opener_web
