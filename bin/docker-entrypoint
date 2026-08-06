@@ -5,4 +5,11 @@ if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
 fi
 
+# Render assigns the external port via PORT (default 10000). Thruster listens on
+# HTTP_PORT (default 80) and forwards to Puma via TARGET_PORT, so bridge the two
+# here rather than in config/puma.rb, which Thruster already wires up on its own.
+if [ "${1}" == "./bin/thrust" ] && [ -n "${PORT}" ]; then
+  export HTTP_PORT="${PORT}"
+fi
+
 exec "${@}"
